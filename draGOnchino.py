@@ -48,3 +48,19 @@ while True:
             if cell is not None:
                 x, y = cell
                 board[x][y] = BLACK
+                
+
+ # Dibujar el tablero y las piezas
+    draw_board()
+    for y in range(BOARD_SIZE):
+        for x in range(BOARD_SIZE):
+            if board[x][y] == BLACK:
+                draw_piece(x, y, BLACK)
+            elif board[x][y] == WHITE:
+                draw_piece(x, y, WHITE)
+
+    # Actualizar pantalla
+    pygame.display.flip()
+
+    # Esperar un tiempo para mantener una tasa de FPS constante
+    clock.tick(FPS)               
