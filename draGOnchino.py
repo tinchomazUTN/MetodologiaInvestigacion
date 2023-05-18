@@ -1,66 +1,69 @@
-import pygame,sys
-# Constantes
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GRAY = (128, 128, 128)
-CELL_SIZE = 50
-BOARD_SIZE = 9
-SCREEN_SIZE = (CELL_SIZE * BOARD_SIZE, CELL_SIZE * BOARD_SIZE)
-FPS = 30
-
-# Inicializar Pygame
-pygame.init()
-screen = pygame.display.set_mode(SCREEN_SIZE)
-clock = pygame.time.Clock()
+import os
+import pygame
+from pygame.locals import K_ESCAPE, KEYDOWN, MOUSEBUTTONUP, QUIT, K_p
 
 
-# Funciones
-def draw_board():
-    for y in range(BOARD_SIZE):
-        for x in range(BOARD_SIZE):
-            color = WHITE
-            if (x + y) % 2 == 0:
-                color = GRAY
-            pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+Blanco = (255, 255, 255)
+ColorTablero = (209, 148, 95)
+Negro = (0, 0, 0)
+mostrar_hitboxes = False
 
-def draw_piece(x, y, color):
-    pygame.draw.circle(screen, color, (x * CELL_SIZE + CELL_SIZE // 2, y * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 2 - 5)
-    def get_cell(pos):
-    x, y = pos
-    cell_x, cell_y = x // CELL_SIZE, y // CELL_SIZE
-    if cell_x >= BOARD_SIZE or cell_y >= BOARD_SIZE:
-        return None
-    return (cell_x, cell_y)
+class Main:
+    def __init__(self, komi=2.5):
+        pygame.init()
+        anchoDePantalla = 563
+        altoDePantalla = 563
 
-# Tablero
-board = [[None for x in range(BOARD_SIZE)] for y in range(BOARD_SIZE)]
+        self.screen = pygame.display.set_mode((anchoDePantalla, altoDePantalla))
 
-# Bucle principal
-while True:
-    # Eventos
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            cell = get_cell(pos)
-            if cell is not None:
-                x, y = cell
-                board[x][y] = BLACK
-                
+        if os.path.exists('./iconFile.png'):
+            pygame.display.set_icon(pygame.image.load('./iconFile.png'))
 
- # Dibujar el tablero y las piezas
-    draw_board()
-    for y in range(BOARD_SIZE):
-        for x in range(BOARD_SIZE):
-            if board[x][y] == BLACK:
-                draw_piece(x, y, BLACK)
-            elif board[x][y] == WHITE:
-                draw_piece(x, y, WHITE)
+        self.move = 0
+        self.white_move = False
+        self.passed_in_a_row = 0
+        self.gameover = False
+        self.komi = komi
 
-    # Actualizar pantalla
-    pygame.display.flip()
 
-    # Esperar un tiempo para mantener una tasa de FPS constante
-    clock.tick(FPS)               
+    def Iniciar(self):
+        Ejecutando = True
+
+        while Ejecutando:
+            for event in pygame.event.get():
+                self.screen.fill(ColorTablero)
+                self.DibujarTablero()
+
+                if event.type == QUIT:
+                    Ejecutando = False
+
+            pygame.display.update()
+
+        pygame.quit()
+
+    def DibujarTablero(self):
+        for y_pos in range(10, 551, 30):
+            pygame.draw.line(self.screen, Negro, (10, y_pos), (551, y_pos), width=2)
+
+        for x_pos in range(10, 551, 30):
+            pygame.draw.line(self.screen, Negro, (x_pos, 10), (x_pos, 551), width=2)
+
+        star_spots = \
+            [
+                (100, 100),
+                (100, 280),
+                (100, 460),
+
+                (280, 100),
+                (280, 280),
+                (280, 460),
+
+                (460, 100),
+                (460, 280),
+                (460, 460)
+            ]
+
+
+if __name__ == '__main__':
+    app = Main(komi=2.5)
+    app.Iniciar()
