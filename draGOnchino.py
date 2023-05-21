@@ -9,10 +9,10 @@ Negro = (0, 0, 0)
 mostrar_hitboxes = False
 
 class Main:
-    def __init__(self, komi=2.5):
+    def init(self, komi=2.5):
         pygame.init()
-        anchoDePantalla = 563
-        altoDePantalla = 563
+        anchoDePantalla = 1000
+        altoDePantalla = 700
 
         self.screen = pygame.display.set_mode((anchoDePantalla, altoDePantalla))
 
@@ -25,7 +25,38 @@ class Main:
         self.gameover = False
         self.komi = komi
 
+#Pantalla de Inicio del juego
+    def pantallaInicio(self):
+        pygame.init()
+        screen = pygame.display.set_mode((1000, 700))
+        #Imagen de Fondo
+        background_image = pygame.image.load("lib/dragones.jpg").convert()
+        background_image = pygame.transform.scale(background_image, (1000, 700))
 
+        # Boton
+        button_image = pygame.image.load("lib/boton.png").convert_alpha()
+        button_image = pygame.transform.scale(button_image, (250, 100))
+        button_rect = button_image.get_rect()
+        button_rect.x = (screen.get_width() - button_rect.width) // 2
+        button_rect.y = 550
+
+        screen.blit(background_image, (0, 0))
+        screen.blit(button_image, button_rect)
+        pygame.display.flip()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if button_rect.collidepoint(event.pos):
+                        if __name__ == '__main__':
+                            app = Main()
+                            app.init()
+                            app.Iniciar()
+
+
+    #Iniciar Juego
     def Iniciar(self):
         Ejecutando = True
 
@@ -41,6 +72,8 @@ class Main:
 
         pygame.quit()
 
+
+    #Metodo para Dibujar el tablero
     def DibujarTablero(self):
         for y_pos in range(10, 551, 30):
             pygame.draw.line(self.screen, Negro, (10, y_pos), (551, y_pos), width=2)
@@ -63,7 +96,6 @@ class Main:
                 (460, 460)
             ]
 
-
 if __name__ == '__main__':
-    app = Main(komi=2.5)
-    app.Iniciar()
+    app = Main()
+    app.pantallaInicio()
