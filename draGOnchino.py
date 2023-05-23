@@ -2,11 +2,11 @@ import os
 import pygame
 from pygame.locals import K_ESCAPE, KEYDOWN, MOUSEBUTTONUP, QUIT, K_p
 
-
-Blanco = (255, 255, 255)
-ColorTablero = (209, 148, 95)
 Negro = (0, 0, 0)
 mostrar_hitboxes = False
+Blanco = (255, 255, 255)
+ColorTablero = (209, 148, 95)
+
 
 class Main:
     def init(self, komi=2.5):
@@ -15,7 +15,11 @@ class Main:
         altoDePantalla = 700
 
         self.screen = pygame.display.set_mode((anchoDePantalla, altoDePantalla))
-
+        #Esto es para que se vea de quien es el turno
+        pygame.display.set_caption('PELEA! | Comienza Dragon Negro')
+        #es todavia no lo implemetamos pero va a ser para cambiar el turno luego
+        #person = 'Dragon Negro' if not self.move % 2 else 'Dragon Blanco'
+        #pygame.display.set_caption(f'PELEA! | Es turno de {person}'')
         if os.path.exists('./iconFile.png'):
             pygame.display.set_icon(pygame.image.load('./iconFile.png'))
 
@@ -81,21 +85,22 @@ class Main:
         for x_pos in range(10, 551, 30):
             pygame.draw.line(self.screen, Negro, (x_pos, 10), (x_pos, 551), width=2)
 
-        star_spots = \
-            [
-                (100, 100),
-                (100, 280),
-                (100, 460),
+    star_spots = \
+        [
+            (100, 100),
+            (100, 280),
+            (100, 460),
 
-                (280, 100),
-                (280, 280),
-                (280, 460),
+            (280, 100),
+            (280, 280),
+            (280, 460),
 
-                (460, 100),
-                (460, 280),
-                (460, 460)
-            ]
+            (460, 100),
+            (460, 280),
+            (460, 460)
+        ]
 
 if __name__ == '__main__':
     app = Main()
     app.pantallaInicio()
+    
