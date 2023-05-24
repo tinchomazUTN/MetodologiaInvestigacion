@@ -84,7 +84,7 @@ class Main:
         # Dimension de la pantalla de inicio
         screen = pygame.display.set_mode((1000, 700))
         #Imagen inicial de fondo
-        background_image = pygame.image.load("lib/dragones.jpg").convert()
+        background_image = pygame.image.load("lib/portada2.jpg").convert()
         background_image = pygame.transform.scale(background_image, (1000, 700))
 
         #Boton
