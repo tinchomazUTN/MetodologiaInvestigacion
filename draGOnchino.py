@@ -1,11 +1,4 @@
 """
-importación del módulo os,
-es útil cuando necesitamos interactuar con el sistema operativo en el que se ejecuta el proyecto,
-permitiéndote realizar operaciones relacionadas con
-archivos, directorios, variables de entorno y ejecución de comandos del sistema.
-"""
-import os
-"""
 Esto importa todo el módulo pygame,
 lo que te permite acceder a todas las funciones, 
 clases y constantes proporcionadas por la biblioteca.
@@ -23,12 +16,11 @@ Negro = (0, 0, 0)
 Blanco = (255,255,255)
 #color del tablero
 ColorTablero = (125,125,125)
-#posiciones
-PosicionesSprites = False
 
-class Spot(pygame.sprite.Sprite):
+
+class nuevoSprite(pygame.sprite.Sprite):
     def __init__(self, array_indexes, location, size, color):
-        super(Spot, self).__init__()
+        super(nuevoSprite, self).__init__()
         self.surf = pygame.Surface(size)
         self.surf.fill(color)
 
@@ -36,8 +28,6 @@ class Spot(pygame.sprite.Sprite):
         self.array_indexes = array_indexes
         self.occupied = False
         self.color = None
-
-
 
 #Clase Main
 class Main:
@@ -68,9 +58,8 @@ class Main:
         JUGADOR = 'Dragon Negro' if not self.move % 2 else 'Dragon Blanco'
         pygame.display.set_caption('PELEA! | Es turno de {JUGADOR}'')
         """
-        # Si el archivo existe, se carga como icono de la ventana de visualización
-        if os.path.exists('lib/icono.jpg'):
-            pygame.display.set_icon(pygame.image.load('lib/icono.jpg'))
+        #cargar como icono de la ventana
+        pygame.display.set_icon(pygame.image.load('lib/icono.jpg'))
 
         #contador de turnos
         self.turno = 0
@@ -129,8 +118,8 @@ class Main:
 
         #Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
-
-        self.addSprites()
+        #Ubicamos los Sprites
+        self.ubicarSprites()
 
         ejecutando = True
 
@@ -149,7 +138,7 @@ class Main:
                     #posición actual del cursor del mouse en la ventana del juego (x,y)
                     pos = pygame.mouse.get_pos()
                     #contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
-                    clicked_sprites = [sprite for sprite in self.sprites if self.spriteCollided(sprite.location, pos)]
+                    clicked_sprites = [sprite for sprite in self.sprites if self.spriteClick(sprite.location, pos)]
 
                     #asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites:
@@ -190,7 +179,7 @@ class Main:
         #se guarda la lista en la variable de clase
         self.locations = locations
 
-    def addSprites(self):
+    def ubicarSprites(self):
         #rastrear la fila y el índice del elemento en la matriz
         fila = 0
         item = 0
@@ -203,7 +192,7 @@ class Main:
             if fila > 18:
                 break
 
-            sprite = Spot(*location, (10, 10), (255, 32, 1))
+            sprite = nuevoSprite(*location, (10, 10), (255, 32, 1))
             #el sprite recién creado se agrega al grupo de sprites
             self.sprites.add(sprite)
             #también se agrega a la matriz
@@ -222,19 +211,17 @@ class Main:
 
     def dibujarSprites(self):
         for entity in self.sprites:
-            if PosicionesSprites:
-                self.screen.blit(entity.surf, entity.location)
             if entity.occupied:
                 x, y = entity.location
                 loc = (x+1, y)
                 pygame.draw.circle(self.screen, entity.color, loc, 10, 0)
 
-    def spriteCollided(self, sprite_location, clicked_location):
-        sprite_y, sprite_x = sprite_location
-        clicked_y, clicked_x = clicked_location
+    def spriteClick(self, posicion_sprite, posicion_click):
+        sprite_y, sprite_x = posicion_sprite
+        click_y, click_x = posicion_click
 
-        if sprite_y - 10 < clicked_y < sprite_y + 10:
-            if sprite_x - 10 < clicked_x < sprite_x + 10:
+        if sprite_y - 10 < click_y < sprite_y + 10:
+            if sprite_x - 10 < click_x < sprite_x + 10:
                 return True
 
         return False
