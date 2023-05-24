@@ -22,7 +22,7 @@ QUIT: Esta constante representa el evento de salir de la aplicación.
 Negro = (0, 0, 0)
 Blanco = (255,255,255)
 #color del tablero
-ColorTablero = (209, 148, 95)
+ColorTablero = (125,125,125)
 #posiciones
 PosicionesSprites = False
 
@@ -69,8 +69,8 @@ class Main:
         pygame.display.set_caption('PELEA! | Es turno de {JUGADOR}'')
         """
         # Si el archivo existe, se carga como icono de la ventana de visualización
-        if os.path.exists('./iconFile.png'):
-            pygame.display.set_icon(pygame.image.load('./iconFile.png'))
+        if os.path.exists('lib/icono.jpg'):
+            pygame.display.set_icon(pygame.image.load('lib/icono.jpg'))
 
         #contador de turnos
         self.turno = 0
@@ -84,19 +84,19 @@ class Main:
         # Dimension de la pantalla de inicio
         screen = pygame.display.set_mode((1000, 700))
         #Imagen inicial de fondo
-        background_image = pygame.image.load("lib/portada2.jpg").convert()
+        background_image = pygame.image.load("lib/portada.png").convert()
         background_image = pygame.transform.scale(background_image, (1000, 700))
 
         #Boton
         button_image = pygame.image.load("lib/boton.png").convert_alpha()
-        button_image = pygame.transform.scale(button_image, (250, 100))
+        button_image = pygame.transform.scale(button_image, (250, 250))
 
         #objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
         button_rect = button_image.get_rect()
         #establece la posición horizontal (x) del rectángulo
         button_rect.x = (screen.get_width() - button_rect.width) // 2
         #establece la posición vertical (y) del rectángulo
-        button_rect.y = 550
+        button_rect.y = 464
 
         #renderizar la imagen de fondo
         screen.blit(background_image, (0, 0))
