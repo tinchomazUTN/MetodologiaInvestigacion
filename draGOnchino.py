@@ -170,14 +170,14 @@ class Main:
 
     def ubicacionSprites(self):
         #lista para las ubicaciones de los sprites
-        locations = []
+        ubicaciones = []
 
         for y_index, y_pos in enumerate(range(10, 551, 30)):
             for x_index, x_pos in enumerate(range(10, 551, 30)):
-                locations.append([[y_index, x_index], [y_pos, x_pos]])
+                ubicaciones.append([[y_index, x_index], [y_pos, x_pos]])
 
         #se guarda la lista en la variable de clase
-        self.locations = locations
+        self.locations = ubicaciones
 
     def ubicarSprites(self):
         #rastrear la fila y el índice del elemento en la matriz
