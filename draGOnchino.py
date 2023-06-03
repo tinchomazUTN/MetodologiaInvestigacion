@@ -5,7 +5,7 @@ clases y constantes proporcionadas por la biblioteca.
 """
 import pygame
 # constantes para eventos, teclas y botones del mouse.
-from pygame.locals import MOUSEBUTTONUP, QUIT
+from pygame.locals import MOUSEBUTTONUP, QUIT,K_ESCAPE, KEYDOWN, K_p
 import numpy as np
 
 """
@@ -69,6 +69,8 @@ class Main:
         self.turno_blanco = False
         # Ventaja del jugador que comienza segundo
         self.komi = komi
+        self.passed_in_a_row = 0
+        self.gameover = False
 
     # Pantalla de Inicio del juego
     def pantallaInicio(self):
@@ -145,7 +147,7 @@ class Main:
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if self.spriteClick(sprite.location, pos)]
                     #asegurarse de que se ha hecho clic en al menos un sprite
-                    if clicked_sprites:
+                    if clicked_sprites and not self.gameover:
                         clicked_sprite = clicked_sprites[0]
                         #verificar si el sprite clikeado no está ocupado.
                         if not clicked_sprite.occupied:
@@ -174,24 +176,146 @@ class Main:
                                 pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
 
                     print()
+                elif event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        running = False
+
+                    elif event.key == K_p:
+                        player = 'White' if not self.turno % 2 else 'Black'
+
+                        self.pasar()
+
                 elif event.type == QUIT:
-                    ejecutando = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        ejecutando= False
+                    running = False
             pygame.display.update()
         pygame.quit()
 
+    def pasar(self):
+        self.passed_in_a_row += 1
+        if self.passed_in_a_row == 2:
+            self.terminar()
+            return
+
+        self.turno += 1
+        self.turno_blanco = True if not self.turno_blanco else False
+
+        jugador = 'Black' if not self.turno % 2 else 'White'
+        pygame.display.set_caption(f'Batalla! | Es turno del jugador {jugador}')
+
+    def terminar(self):
+        jugadorGanador = self.calculateWhoWon()
+        won_string = f'Felicitaciones! | {jugadorGanador} ganó!'
+
+        pygame.display.set_caption(won_string)
+
+        self.gameover = True
+
+    def calculateWhoWon(self):
+        white_score = self.komi
+        black_score = 0
+
+        white_on_board, black_on_board = self.findPiecesOnBoard()
+        white_surrounded, black_surrounded = self.calculateSurroundedSpots()
+
+        white_score += white_on_board
+        black_score += black_on_board
+
+        white_score += white_surrounded
+        black_score += black_surrounded
+
+        print()
+        self.printLog('ENDING SCORES:', 'info')
+        self.printLog(f'{white_surrounded=}, {black_surrounded=}', 'info')
+        self.printLog(f'{white_on_board=}, {black_on_board=}', 'info')
+        self.printLog(f'{white_score=}, {black_score=}', 'info')
+        print()
+
+        if white_score > black_score:
+            return 'White'
+        else:
+            return 'Black'
+
+    def findPiecesOnBoard(self):
+        white_count = 0
+        black_count = 0
+
+        for row in self.sprite_array:
+            for item in row:
+                if not item.occupied:
+                    continue
+
+                color = item.color
+
+                if color == Blanco:
+                    white_count += 1
+                else:
+                    black_count += 1
+
+        return (white_count, black_count)
+
+    def calculateSurroundedSpots(self):
+        white_count = 0
+        black_count = 0
+
+        self.empty_groups = []
+        self.empty_counts = []
+        self.empty_colors = []
+
+        self.visited = []
+
+        for y, row in enumerate(self.sprite_array):
+            for x, sprite in enumerate(row):
+                if sprite.occupied:
+                    continue
+
+                self.findEmptyLocations(y, x)
+
+        for index in range(len(self.empty_colors)):
+            empty_count = self.empty_counts[index]
+            empty_colors = self.empty_colors[index]
+
+            if Negro not in empty_colors and Blanco in empty_colors:
+                white_count += empty_count
+            if Blanco not in empty_colors and Negro in empty_colors:
+                black_count += empty_count
+
+        return (white_count, black_count)
+
+    def findEmptyLocations(self, y, x, adding=False):
+        if not adding:
+            self.empty_groups.append([])
+            self.empty_counts.append(0)
+            self.empty_colors.append([])
+
+        neighbors = self.getNeighbors(y, x, (19, 19))
+        neighbors.append((y, x))
+
+        for location in neighbors:
+            sprite = self.sprite_array[location[0]][location[1]]
+
+            if sprite.occupied or sprite in self.visited:
+                continue
+
+            self.visited.append(sprite)
+            self.empty_groups[-1].append(location)
+            self.empty_counts[-1] += 1
+            self.empty_colors[-1] += self.getNonEmptyColorsOfNeighbors(y, x)
+
+            self.findEmptyLocations(location[0], location[1], adding=True)
+
+    def getNonEmptyColorsOfNeighbors(self, y, x):
+        colors = []
+
+        neighbors = self.getNeighbors(y, x, (19, 19))
+        for location in neighbors:
+            sprite = self.sprite_array[location[0]][location[1]]
+            if not sprite.occupied:
+                continue
+            colors.append(sprite.color)
+
+        return colors
+
     def testGroup(self, board, opponent_board, y, x, current_group):
-        """ Assume the current group is captured. Find it via flood fill
-        and if an empty neighboor is encountered, break (group is alive).
-
-        board - 19x19 array of player's stones
-        opponent_board - 19x19 array of opponent's stones
-        x,y - position to test
-        current_group - tested stones in player's color
-
-        """
 
         pos = (y, x)
 
