@@ -33,7 +33,102 @@ class nuevoSprite(pygame.sprite.Sprite):
         self.color = None
 
 # Clase Main
+def pantallaInicio():
+    # inicializar la biblioteca pygame y prepararla para su uso
+    pygame.init()
+    pygame.mixer.get_init()
+    # Dimension de la pantalla de inicio
+    screen = pygame.display.set_mode((1280, 720),pygame.FULLSCREEN)
+    #Imagen inicial de fondo
+    background_image = pygame.image.load("lib/portada.png").convert()
+    background_image = pygame.transform.scale(background_image, (1280, 720))
+
+    # Boton
+    button_image = pygame.image.load("lib/boton.png").convert_alpha()
+    button_image = pygame.transform.scale(button_image, (250, 250))
+
+    # objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
+    button_rect = button_image.get_rect()
+    # establece la posición horizontal (x) del rectángulo
+    button_rect.x = (screen.get_width() - button_rect.width) // 2
+    # establece la posición vertical (y) del rectángulo
+    button_rect.y = 464
+
+    # renderizar la imagen de fondo
+    screen.blit(background_image, (0, 0))
+    # renderiza la imagen del botón
+    screen.blit(button_image, button_rect)
+    # actualizar la pantalla, mostrando los cambios realizados
+    pygame.display.flip()
+
+    pygame.mixer.music.load('lib/Sonido/musica_inicio.mp3')
+    pygame.mixer.music.play(-1)
+
+    #Bucle de pantalla de inicio para capturar los eventos del teclado o mouse
+    Ejecutando = True
+    while Ejecutando:
+        for event in pygame.event.get():
+            # Si se presiona el boton de salir(X) se cierra el juego
+            if event.type == pygame.QUIT:
+                Ejecutando = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    Ejecutando = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                """
+                Se determina si el evento esta sobre la posicion del boton,
+                para iniciar el juego
+                """
+                if button_rect.collidepoint(event.pos):
+                    if __name__ == '__main__':
+                        pygame.mixer.music.stop()
+                        aplicacion = Main()
+                        aplicacion.init()
+                        aplicacion.iniciar()
+
+
+def getNeighbors(y, x, board_shape):
+    neighbors = list()
+
+    if y > 0:
+        neighbors.append((y - 1, x))
+    if y < board_shape[0] - 1:
+        neighbors.append((y + 1, x))
+    if x > 0:
+        neighbors.append((y, x - 1))
+    if x < board_shape[1] - 1:
+        neighbors.append((y, x + 1))
+
+    return neighbors
+
+
+def spriteClick(posicion_sprite, posicion_click):
+    sprite_y, sprite_x = posicion_sprite
+    click_y, click_x = posicion_click
+
+    if sprite_y - 10 < click_y < sprite_y + 10:
+        if sprite_x - 10 < click_x < sprite_x + 10:
+            return True
+
+    return False
+
+
 class Main:
+    def __init__(self):
+        self.locations = None
+        self.visited = None
+        self.empty_colors = None
+        self.empty_counts = None
+        self.empty_groups = None
+        self.gameover = None
+        self.passed_in_a_row = None
+        self.komi = None
+        self.turno_blanco = None
+        self.turno = None
+        self.screen = None
+        self.sprite_array = None
+        self.sprites = None
+
     def init(self, komi=2.5):
         # inicializar la biblioteca pygame y prepararla para su uso
         pygame.init()
@@ -73,58 +168,6 @@ class Main:
         self.gameover = False
 
     # Pantalla de Inicio del juego
-    def pantallaInicio(self):
-        # inicializar la biblioteca pygame y prepararla para su uso
-        pygame.init()
-        pygame.mixer.get_init()
-        # Dimension de la pantalla de inicio
-        screen = pygame.display.set_mode((1280, 720),pygame.FULLSCREEN)
-        #Imagen inicial de fondo
-        background_image = pygame.image.load("lib/portada.png").convert()
-        background_image = pygame.transform.scale(background_image, (1280, 720))
-
-        # Boton
-        button_image = pygame.image.load("lib/boton.png").convert_alpha()
-        button_image = pygame.transform.scale(button_image, (250, 250))
-
-        # objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
-        button_rect = button_image.get_rect()
-        # establece la posición horizontal (x) del rectángulo
-        button_rect.x = (screen.get_width() - button_rect.width) // 2
-        # establece la posición vertical (y) del rectángulo
-        button_rect.y = 464
-
-        # renderizar la imagen de fondo
-        screen.blit(background_image, (0, 0))
-        # renderiza la imagen del botón
-        screen.blit(button_image, button_rect)
-        # actualizar la pantalla, mostrando los cambios realizados
-        pygame.display.flip()
-
-        pygame.mixer.music.load('lib/Sonido/lofi-study-112191.mp3')
-        pygame.mixer.music.play(-1)
-
-        #Bucle de pantalla de inicio para capturar los eventos del teclado o mouse
-        Ejecutando = True
-        while Ejecutando:
-            for event in pygame.event.get():
-                # Si se presiona el boton de salir(X) se cierra el juego
-                if event.type == pygame.QUIT:
-                    Ejecutando = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        Ejecutando = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    """
-                    Se determina si el evento esta sobre la posicion del boton,
-                    para iniciar el juego
-                    """
-                    if button_rect.collidepoint(event.pos):
-                        if __name__ == '__main__':
-                            pygame.mixer.music.stop()
-                            app = Main()
-                            app.init()
-                            app.iniciar()
 
     # Iniciar Juego
     def iniciar(self):
@@ -150,7 +193,10 @@ class Main:
                     # posición actual del cursor del mouse en la ventana del juego (x,y)
                     pos = pygame.mouse.get_pos()
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
-                    clicked_sprites = [sprite for sprite in self.sprites if self.spriteClick(sprite.location, pos)]
+                    clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
+                    # Sonido al poner ficha
+                    sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
+                    sonidoFicha.play(0)
                     #asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites and not self.gameover:
                         clicked_sprite = clicked_sprites[0]
@@ -162,7 +208,8 @@ class Main:
                             #obtener las coordenadas x , y de la ubicación del sprite clikeado.
                             x, y = clicked_sprite.location
                             posicion = (x + 1, y)
-                            #dibuja un círculo en la pantalla en la posición loc, con un radio de 10 píxeles y utilizando el colo
+                            #dibuja un círculo en la pantalla en la posición loc
+                            #con un radio de 10 píxeles y utilizando el colo
                             pygame.draw.circle(self.screen, colorCirculo, posicion, 10, 0)
 
                             clicked_sprite.occupied = True
@@ -229,12 +276,6 @@ class Main:
         white_score += white_surrounded
         black_score += black_surrounded
 
-        print()
-        self.printLog('ENDING SCORES:', 'info')
-        self.printLog(f'{white_surrounded=}, {black_surrounded=}', 'info')
-        self.printLog(f'{white_on_board=}, {black_on_board=}', 'info')
-        self.printLog(f'{white_score=}, {black_score=}', 'info')
-        print()
 
         if white_score > black_score:
             return 'White'
@@ -257,7 +298,7 @@ class Main:
                 else:
                     black_count += 1
 
-        return (white_count, black_count)
+        return white_count, black_count
 
     def calculateSurroundedSpots(self):
         white_count = 0
@@ -285,7 +326,7 @@ class Main:
             if Blanco not in empty_colors and Negro in empty_colors:
                 black_count += empty_count
 
-        return (white_count, black_count)
+        return white_count, black_count
 
     def findEmptyLocations(self, y, x, adding=False):
         if not adding:
@@ -293,7 +334,7 @@ class Main:
             self.empty_counts.append(0)
             self.empty_colors.append([])
 
-        neighbors = self.getNeighbors(y, x, (19, 19))
+        neighbors = getNeighbors(y, x, (19, 19))
         neighbors.append((y, x))
 
         for location in neighbors:
@@ -312,7 +353,7 @@ class Main:
     def getNonEmptyColorsOfNeighbors(self, y, x):
         colors = []
 
-        neighbors = self.getNeighbors(y, x, (19, 19))
+        neighbors = getNeighbors(y, x, (19, 19))
         for location in neighbors:
             sprite = self.sprite_array[location[0]][location[1]]
             if not sprite.occupied:
@@ -331,7 +372,7 @@ class Main:
 
         if opponent_board[pos]:
             current_group[pos] = True
-            neighbors = self.getNeighbors(y, x, board.shape)
+            neighbors = getNeighbors(y, x, board.shape)
 
             for yn, xn in neighbors:
                 has_liberties = self.testGroup(board, opponent_board, yn, xn, current_group)
@@ -372,7 +413,8 @@ class Main:
                 # Si el valor de la celda es diferente de 0, se considera ocupada; de lo contrario, se considera vacía.
                 occupied = True if item != 0 else False
 
-                # Actualiza el estado de la celda correspondiente en la matriz sprite_array con los valores de color y ocupado
+                # Actualiza el estado de la celda correspondiente en la matriz
+                # sprite_array con los valores de color y ocupado
                 self.sprite_array[index1][index2].occupied = occupied
                 self.sprite_array[index1][index2].color = color
 
@@ -382,7 +424,7 @@ class Main:
 
         # only test neighbors of current move (other's will have unchanged
         # liberties)
-        neighbors = self.getNeighbors(y, x, black_board.shape)
+        neighbors = getNeighbors(y, x, black_board.shape)
 
         board = white_board if turn_white else black_board
         opponent_board = black_board if turn_white else white_board
@@ -440,20 +482,6 @@ class Main:
         else:
             return out_board
 
-    def getNeighbors(self, y, x, board_shape):
-        neighbors = list()
-
-        if y > 0:
-            neighbors.append((y - 1, x))
-        if y < board_shape[0] - 1:
-            neighbors.append((y + 1, x))
-        if x > 0:
-            neighbors.append((y, x - 1))
-        if x < board_shape[1] - 1:
-            neighbors.append((y, x + 1))
-
-        return neighbors
-
     def ubicacionSprites(self):
         ubicaciones = []
 
@@ -502,20 +530,8 @@ class Main:
                 x, y = entity.location
                 loc = (x+1, y)
                 pygame.draw.circle(self.screen, entity.color, loc, 15, 0)
-        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
-        sonidoFicha.play()
-    def spriteClick(self, posicion_sprite, posicion_click):
-        sprite_y, sprite_x = posicion_sprite
-        click_y, click_x = posicion_click
-
-        if sprite_y - 10 < click_y < sprite_y + 10:
-            if sprite_x - 10 < click_x < sprite_x + 10:
-                return True
-
-        return False
 
 
 if __name__ == '__main__':
     app = Main()
-    app.pantallaInicio()
-
+    pantallaInicio()
