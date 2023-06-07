@@ -76,6 +76,7 @@ class Main:
     def pantallaInicio(self):
         # inicializar la biblioteca pygame y prepararla para su uso
         pygame.init()
+        pygame.mixer.get_init()
         # Dimension de la pantalla de inicio
         screen = pygame.display.set_mode((1280, 720),pygame.FULLSCREEN)
         #Imagen inicial de fondo
@@ -100,6 +101,9 @@ class Main:
         # actualizar la pantalla, mostrando los cambios realizados
         pygame.display.flip()
 
+        pygame.mixer.music.load('lib/Sonido/lofi-study-112191.mp3')
+        pygame.mixer.music.play(-1)
+
         #Bucle de pantalla de inicio para capturar los eventos del teclado o mouse
         Ejecutando = True
         while Ejecutando:
@@ -117,6 +121,7 @@ class Main:
                     """
                     if button_rect.collidepoint(event.pos):
                         if __name__ == '__main__':
+                            pygame.mixer.music.stop()
                             app = Main()
                             app.init()
                             app.iniciar()
@@ -128,9 +133,9 @@ class Main:
         self.ubicacionSprites()
         # Ubicamos los Sprites
         self.ubicarSprites()
-
         ejecutando = True
-
+        pygame.mixer.music.load('lib/Sonido/partida.mp3')
+        pygame.mixer.music.play(-1)
         while ejecutando:
             for event in pygame.event.get():
                 # Creamos el fondo de la pantalla
@@ -159,6 +164,7 @@ class Main:
                             posicion = (x + 1, y)
                             #dibuja un círculo en la pantalla en la posición loc, con un radio de 10 píxeles y utilizando el colo
                             pygame.draw.circle(self.screen, colorCirculo, posicion, 10, 0)
+
                             clicked_sprite.occupied = True
                             clicked_sprite.color = colorCirculo
 
@@ -178,15 +184,15 @@ class Main:
                     print()
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
-                        running = False
+                        ejecutando = False
 
                     elif event.key == K_p:
                         player = 'White' if not self.turno % 2 else 'Black'
 
                         self.pasar()
-
+                        ejecutando = False
                 elif event.type == QUIT:
-                    running = False
+                    ejecutando = False
             pygame.display.update()
         pygame.quit()
 
@@ -467,6 +473,7 @@ class Main:
 
         # iterar a través de las ubicaciones generadas
         for location in self.locations:
+
             if item >= 19:
                 fila += 1
                 item = 0
@@ -495,7 +502,8 @@ class Main:
                 x, y = entity.location
                 loc = (x+1, y)
                 pygame.draw.circle(self.screen, entity.color, loc, 15, 0)
-
+        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
+        sonidoFicha.play()
     def spriteClick(self, posicion_sprite, posicion_click):
         sprite_y, sprite_x = posicion_sprite
         click_y, click_x = posicion_click
