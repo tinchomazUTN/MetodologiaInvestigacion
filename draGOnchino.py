@@ -26,7 +26,6 @@ class nuevoSprite(pygame.sprite.Sprite):
         super(nuevoSprite, self).__init__()
         self.surf = pygame.Surface(size)
         self.surf.fill(color)
-
         self.location = location
         self.array_indexes = array_indexes
         self.occupied = False
@@ -205,12 +204,21 @@ class Main:
                             self.turno += 1
                             # colorcirculo es negro si el numero es impar y blanco si es par
                             colorCirculo = Negro if self.turno % 2 else Blanco
+
                             #obtener las coordenadas x , y de la ubicación del sprite clikeado.
                             x, y = clicked_sprite.location
                             posicion = (x + 1, y)
                             #dibuja un círculo en la pantalla en la posición loc
                             #con un radio de 10 píxeles y utilizando el colo
-                            pygame.draw.circle(self.screen, colorCirculo, posicion, 10, 0)
+                            #pygame.draw.circle(self.screen, colorCirculo, posicion, 10, 0)
+
+
+                            # Redimensionar la imagen al tamaño deseado (10x10)
+                            imagen = pygame.image.load("lib/FichaNegra.png") if self.turno % 2 else pygame.image.load("lib/FichaBlanca.png")
+
+                            imagen = pygame.transform.scale(imagen, (10, 10))
+                            # Dibujar la imagen en la superficie de pantalla
+                            self.screen.blit(imagen, posicion)
 
                             clicked_sprite.occupied = True
                             clicked_sprite.color = colorCirculo
@@ -528,9 +536,13 @@ class Main:
         for entity in self.sprites:
             if entity.occupied:
                 x, y = entity.location
-                loc = (x+1, y)
-                pygame.draw.circle(self.screen, entity.color, loc, 15, 0)
+                loc = (x-20,y-20)
+                #pygame.draw.circle(self.screen, entity.color, loc, 15, 0)
+                imagen = pygame.image.load("lib/FichaNegra.png") if entity.color==Negro else pygame.image.load(
+                    "lib/FichaBlanca.png")
+                imagen = pygame.transform.scale(imagen, (40, 40))
 
+                self.screen.blit(imagen, loc)
 
 if __name__ == '__main__':
     app = Main()
