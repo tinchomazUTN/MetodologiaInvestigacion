@@ -63,10 +63,16 @@ def pantallaInicio():
     pygame.mixer.music.load('lib/Sonido/musica_inicio.mp3')
     pygame.mixer.music.play(-1)
 
+    #esto se vuelve true cdo los dos pasan, si esta condicion es true, el juego termina
+    terminar = False
+
     #Bucle de pantalla de inicio para capturar los eventos del teclado o mouse
     Ejecutando = True
     while Ejecutando:
         for event in pygame.event.get():
+            if terminar == True:
+                Ejecutando=False
+
             # Si se presiona el boton de salir(X) se cierra el juego
             if event.type == pygame.QUIT:
                 Ejecutando = False
@@ -166,8 +172,6 @@ class Main:
         self.passed_in_a_row = 0
         self.gameover = False
 
-    # Pantalla de Inicio del juego
-
     # Iniciar Juego
     def iniciar(self):
 
@@ -245,7 +249,7 @@ class Main:
                         player = 'White' if not self.turno % 2 else 'Black'
 
                         self.pasar()
-                        ejecutando = False
+
                 elif event.type == QUIT:
                     ejecutando = False
             pygame.display.update()
@@ -254,7 +258,7 @@ class Main:
     def pasar(self):
         self.passed_in_a_row += 1
         if self.passed_in_a_row == 2:
-            self.terminar()
+            self.terminar=true
             return
 
         self.turno += 1
