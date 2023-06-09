@@ -140,6 +140,7 @@ class Main:
 
         # Asignamos un objeto de Sprites
         self.sprites = pygame.sprite.Group()
+
         """
         Es una matriz 2D (lista de listas) 
         que se inicializa con 19 filas y 19 columnas. 
@@ -434,11 +435,14 @@ class Main:
 
         # only test neighbors of current move (other's will have unchanged
         # liberties)
+
         neighbors = getNeighbors(y, x, black_board.shape)
 
+        #asigna a tablero el tablero del jugador actual, y a la otra el otro equisde
         board = white_board if turn_white else black_board
         opponent_board = black_board if turn_white else white_board
 
+        #crea otra copia del tablero del rival
         original_opponent_board = opponent_board.copy()
 
         # to test suicidal moves
@@ -446,12 +450,12 @@ class Main:
         original_pos = original_pos[::-1]
 
         # testing suicides
-
         current_group = np.zeros((19, 19), dtype=bool)
         original_pos_has_liberties = self.testGroup(opponent_board, board, *original_pos, current_group)
 
         # only test adjacent stones in opponent's color
         for pos in neighbors:
+            #La línea de código pos = pos[::-1] invierte el orden de los elementos en la variable pos.
             pos = pos[::-1]
 
             if not opponent_board[pos]:
@@ -492,6 +496,8 @@ class Main:
         else:
             return out_board
 
+    #esto genera un array llamado ubicaciones con las posiciones x y donde se posicionaran luego las fichas
+    #esto es usado por ubicar sprites
     def ubicacionSprites(self):
         ubicaciones = []
 
@@ -503,7 +509,8 @@ class Main:
         # se guarda la lista en la variable de clase
         self.locations = ubicaciones
 
-
+    # esto es para crear el lugar clikeable donde iran las fichas, y las agrega a lalista de sprites,
+    # la cual sera usada por la funcion dibujar sprites para obtener las ubicaciones
     def ubicarSprites(self):
         # rastrear la fila y el índice del elemento en la matriz
         fila = 0
@@ -526,7 +533,7 @@ class Main:
             # siguiente elemento
             item += 1
 
-    # Metodo para Dibujar el tablero
+    # Metodo para Dibujar lineas del tablero
     def dibujarTablero(self):
 
         for y_pos in range(10, alt,sp):
@@ -534,6 +541,7 @@ class Main:
         for x_pos in range(10, alt, sp):
             pygame.draw.line(self.screen, Negro, (x_pos, 10), (x_pos, alt), width=2)
 
+    #dibuja la ficha en el lugar seleccionado
     def dibujarSprites(self):
         for entity in self.sprites:
             if entity.occupied:
