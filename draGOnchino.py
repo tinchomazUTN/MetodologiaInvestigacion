@@ -63,15 +63,12 @@ def pantallaInicio():
     pygame.mixer.music.load('lib/Sonido/musica_inicio.mp3')
     pygame.mixer.music.play(-1)
 
-    #esto se vuelve true cdo los dos pasan, si esta condicion es true, el juego termina
-    terminar = False
+
 
     #Bucle de pantalla de inicio para capturar los eventos del teclado o mouse
     Ejecutando = True
     while Ejecutando:
         for event in pygame.event.get():
-            if terminar == True:
-                Ejecutando=False
 
             # Si se presiona el boton de salir(X) se cierra el juego
             if event.type == pygame.QUIT:
@@ -172,6 +169,7 @@ class Main:
         self.passed_in_a_row = 0
         self.gameover = False
 
+
     # Iniciar Juego
     def iniciar(self):
 
@@ -183,6 +181,14 @@ class Main:
         pygame.mixer.music.load('lib/Sonido/partida.mp3')
         pygame.mixer.music.play(-1)
         while ejecutando:
+            if self.gameover:
+                ejecutando = False
+                #if self.calculateWhoWon()=='White':
+                    #llamar a pantalla de ganador con ganador blanco
+                #else:
+                    #llamar a pantalla de ganador con ganador negro
+
+
             for event in pygame.event.get():
                 # Creamos el fondo de la pantalla
                 self.screen.fill(ColorTablero)
@@ -192,6 +198,7 @@ class Main:
                 Dibujamos las ubicaciones de los Sprites
                 """
                 self.dibujarSprites()
+
                 if event.type == MOUSEBUTTONUP:
                     # posición actual del cursor del mouse en la ventana del juego (x,y)
                     pos = pygame.mouse.get_pos()
@@ -201,7 +208,7 @@ class Main:
                     sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
                     sonidoFicha.play(0)
                     #asegurarse de que se ha hecho clic en al menos un sprite
-                    if clicked_sprites and not self.gameover:
+                    if clicked_sprites:
                         clicked_sprite = clicked_sprites[0]
                         #verificar si el sprite clikeado no está ocupado.
                         if not clicked_sprite.occupied:
@@ -212,10 +219,6 @@ class Main:
                             #obtener las coordenadas x , y de la ubicación del sprite clikeado.
                             x, y = clicked_sprite.location
                             posicion = (x + 1, y)
-                            #dibuja un círculo en la pantalla en la posición loc
-                            #con un radio de 10 píxeles y utilizando el colo
-                            #pygame.draw.circle(self.screen, colorCirculo, posicion, 10, 0)
-
 
                             # Redimensionar la imagen al tamaño deseado (10x10)
                             imagen = pygame.image.load("lib/FichaNegra.png") if self.turno % 2 else pygame.image.load("lib/FichaBlanca.png")
@@ -247,7 +250,6 @@ class Main:
 
                     elif event.key == K_p:
                         player = 'White' if not self.turno % 2 else 'Black'
-
                         self.pasar()
 
                 elif event.type == QUIT:
@@ -258,7 +260,7 @@ class Main:
     def pasar(self):
         self.passed_in_a_row += 1
         if self.passed_in_a_row == 2:
-            self.terminar=true
+            self.terminar()
             return
 
         self.turno += 1
@@ -269,10 +271,6 @@ class Main:
 
     def terminar(self):
         jugadorGanador = self.calculateWhoWon()
-        won_string = f'Felicitaciones! | {jugadorGanador} ganó!'
-
-        pygame.display.set_caption(won_string)
-
         self.gameover = True
 
     def calculateWhoWon(self):
