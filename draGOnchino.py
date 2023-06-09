@@ -91,6 +91,7 @@ def pantallaInicio():
                         aplicacion.iniciar()
 
 
+#board shape es una tupla que tiene dos valores, que son filas[0] y columnas[1]
 def getNeighbors(y, x, board_shape):
     neighbors = list()
 
@@ -103,7 +104,9 @@ def getNeighbors(y, x, board_shape):
     if x < board_shape[1] - 1:
         neighbors.append((y, x + 1))
 
+    #retorna una list con los "vecinos" que son las libertades posibles que tiene la ficha
     return neighbors
+
 
 
 def spriteClick(posicion_sprite, posicion_click):
@@ -343,6 +346,8 @@ class Main:
 
         return white_count, black_count
 
+    #mp que devuelve las ubicaciones libres que tiene esa ficha, revisando sus libertades, y devolviendo cuales no estan
+    #ocupadas por el rival
     def findEmptyLocations(self, y, x, adding=False):
         if not adding:
             self.empty_groups.append([])
@@ -362,9 +367,9 @@ class Main:
             self.empty_groups[-1].append(location)
             self.empty_counts[-1] += 1
             self.empty_colors[-1] += self.getNonEmptyColorsOfNeighbors(y, x)
-
             self.findEmptyLocations(location[0], location[1], adding=True)
 
+    #devuelve el color de la ubicacion ocupada
     def getNonEmptyColorsOfNeighbors(self, y, x):
         colors = []
 
@@ -377,16 +382,20 @@ class Main:
 
         return colors
 
+    #current group es una matriz de 19x19 con todos 0 o falso
+    #nt pero basicamente te devuelve si tiene o no libertades
     def testGroup(self, board, opponent_board, y, x, current_group):
 
         pos = (y, x)
 
         if current_group[pos]:
-            # already tested stones are no liberties
+            # las fichas ya testeads no son liberates
             return False
 
+        #verifica si hay una ficha del rival en pos
         if opponent_board[pos]:
             current_group[pos] = True
+
             neighbors = getNeighbors(y, x, board.shape)
 
             for yn, xn in neighbors:
@@ -397,6 +406,8 @@ class Main:
 
         return not board[pos]
 
+    #En resumen, la función se encarga de capturar las piezas del oponente en el juego, actualiza el estado del
+    #tablero y cambia el turno de juego.
     def capturePieces(self, y, x):
         """
             Estos tableros son matrices NumPy que representan la distribución de las piezas en el juego.
@@ -437,9 +448,7 @@ class Main:
 
         black_board, white_board = black_board_.copy(), white_board_.copy()
 
-        # only test neighbors of current move (other's will have unchanged
-        # liberties)
-
+        # solo testea los vecinos del jugador actual, ya que los del otro no han cambiado
         neighbors = getNeighbors(y, x, black_board.shape)
 
         #asigna a tablero el tablero del jugador actual, y a la otra el otro equisde
@@ -449,11 +458,11 @@ class Main:
         #crea otra copia del tablero del rival
         original_opponent_board = opponent_board.copy()
 
-        # to test suicidal moves
+        # testear movimientos suicida
         original_pos = (y, x)
         original_pos = original_pos[::-1]
 
-        # testing suicides
+        # testear suicidio
         current_group = np.zeros((19, 19), dtype=bool)
         original_pos_has_liberties = self.testGroup(opponent_board, board, *original_pos, current_group)
 
@@ -464,7 +473,7 @@ class Main:
 
             if not opponent_board[pos]:
                 continue
-
+            #el código crea una matriz booleana de tamaño 19x19 llena de False
             current_group = np.zeros((19, 19), dtype=bool)
             has_liberties = self.testGroup(board, opponent_board, *pos, current_group)
 
