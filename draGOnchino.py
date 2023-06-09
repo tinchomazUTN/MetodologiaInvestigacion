@@ -47,21 +47,23 @@ def pantallaInicio():
     button_image = pygame.transform.scale(button_image, (250, 250))
 
     # objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
-    button_rect = button_image.get_rect()
+    botonInicio = button_image.get_rect()
     # establece la posición horizontal (x) del rectángulo
-    button_rect.x = (screen.get_width() - button_rect.width) // 2
+    botonInicio.x = (screen.get_width() - botonInicio.width) // 2
     # establece la posición vertical (y) del rectángulo
-    button_rect.y = 464
+    botonInicio.y = 464
 
     # renderizar la imagen de fondo
     screen.blit(background_image, (0, 0))
     # renderiza la imagen del botón
-    screen.blit(button_image, button_rect)
+    screen.blit(button_image, botonInicio)
     # actualizar la pantalla, mostrando los cambios realizados
     pygame.display.flip()
-
-    pygame.mixer.music.load('lib/Sonido/musica_inicio.mp3')
-    pygame.mixer.music.play(-1)
+    #Musica menu principal
+    musicaInicio = pygame.mixer.music
+    musicaInicio.load('lib/Sonido/musica_inicio.mp3')
+    musicaInicio.play(-1)
+    musicaInicio.set_volume(0.05)
 
 
 
@@ -81,9 +83,9 @@ def pantallaInicio():
                 Se determina si el evento esta sobre la posicion del boton,
                 para iniciar el juego
                 """
-                if button_rect.collidepoint(event.pos):
+                if botonInicio.collidepoint(event.pos):
                     if __name__ == '__main__':
-                        pygame.mixer.music.stop()
+                        musicaInicio.stop()
                         aplicacion = Main()
                         aplicacion.init()
                         aplicacion.iniciar()
@@ -179,8 +181,10 @@ class Main:
         # Ubicamos los Sprites
         self.ubicarSprites()
         ejecutando = True
-        pygame.mixer.music.load('lib/Sonido/partida.mp3')
-        pygame.mixer.music.play(-1)
+        musicaPartida = pygame.mixer.music
+        musicaPartida.load('lib/Sonido/partida.mp3')
+        musicaPartida.play(-1)
+        musicaPartida.set_volume(0.05)
         while ejecutando:
             if self.gameover:
                 ejecutando = False
@@ -188,7 +192,6 @@ class Main:
                     #llamar a pantalla de ganador con ganador blanco
                 #else:
                     #llamar a pantalla de ganador con ganador negro
-
 
             for event in pygame.event.get():
                 # Creamos el fondo de la pantalla
@@ -208,6 +211,7 @@ class Main:
                     # Sonido al poner ficha
                     sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
                     sonidoFicha.play(0)
+                    sonidoFicha.set_volume(0.05)
                     #asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites:
                         clicked_sprite = clicked_sprites[0]
