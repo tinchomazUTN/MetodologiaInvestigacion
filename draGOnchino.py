@@ -7,7 +7,7 @@ import pygame
 # constantes para eventos, teclas y botones del mouse.
 from pygame.locals import MOUSEBUTTONUP, QUIT,K_ESCAPE, KEYDOWN, K_p
 import numpy as np
-
+import time
 """
 MOUSEBUTTONUP: Esta constante representa el evento de soltar un botón del mouse.
 QUIT: Esta constante representa el evento de salir de la aplicación.
@@ -175,10 +175,10 @@ class Main:
         self.passed_in_a_row = 0
         self.gameover = False
 
-
     # Iniciar Juego
     def iniciar(self):
-
+        clock = pygame.time.Clock()
+        fps = 30
         # Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
         # Ubicamos los Sprites
@@ -188,20 +188,25 @@ class Main:
         musicaPartida.load('lib/Sonido/partida.mp3')
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
+        background_image = pygame.image.load('lib/montaña.jpg')
+        background_image = pygame.transform.scale(background_image, (1280, 720))
+
         while ejecutando:
+            clock.tick(fps)
             if self.gameover:
                 ejecutando = False
-                if self.calculateWhoWon()=='White':
-                    #llamar a pantalla de ganador con ganador blanco
+                if self.calculateWhoWon() == 'White':
+                    # llamar a pantalla de ganador con ganador blanco
                     self.ganador("blanco")
                 else:
-                    #llamar a pantalla de ganador con ganador negro
+                    # llamar a pantalla de ganador con ganador negro
                     self.ganador("negro")
 
             for event in pygame.event.get():
                 # Creamos el fondo de la pantalla
-                self.screen.fill(ColorTablero)
-                # Dibujamos el tabler
+
+                self.screen.blit(background_image, (0, 0))
+                # Dibujamos el tablero
                 self.dibujarTablero()
                 """
                 Dibujamos las ubicaciones de los Sprites
@@ -279,10 +284,12 @@ class Main:
         jugador = 'Black' if not self.turno % 2 else 'White'
         pygame.display.set_caption(f'Batalla! | Es turno del jugador {jugador}')
 
+    #llama a la pantalla de final del juego
     def terminar(self):
         jugadorGanador = self.calculateWhoWon()
         self.gameover = True
 
+    #retortna blanco o negro
     def calculateWhoWon(self):
         white_score = self.komi
         black_score = 0
@@ -295,7 +302,6 @@ class Main:
 
         white_score += white_surrounded
         black_score += black_surrounded
-
 
         if white_score > black_score:
             return 'White'
@@ -327,7 +333,7 @@ class Main:
             pygame.display.flip()
 
         pygame.quit()
-
+    #devuelve cuantas fichas tiene cada uno
     def findPiecesOnBoard(self):
         white_count = 0
         black_count = 0
@@ -346,6 +352,7 @@ class Main:
 
         return white_count, black_count
 
+    #retorna espacio "cercado"
     def calculateSurroundedSpots(self):
         white_count = 0
         black_count = 0
@@ -353,7 +360,6 @@ class Main:
         self.empty_groups = []
         self.empty_counts = []
         self.empty_colors = []
-
         self.visited = []
 
         for y, row in enumerate(self.sprite_array):
