@@ -191,10 +191,12 @@ class Main:
         while ejecutando:
             if self.gameover:
                 ejecutando = False
-                #if self.calculateWhoWon()=='White':
+                if self.calculateWhoWon()=='White':
                     #llamar a pantalla de ganador con ganador blanco
-                #else:
+                    self.ganador("blanco")
+                else:
                     #llamar a pantalla de ganador con ganador negro
+                    self.ganador("negro")
 
             for event in pygame.event.get():
                 # Creamos el fondo de la pantalla
@@ -299,6 +301,32 @@ class Main:
             return 'White'
         else:
             return 'Black'
+
+    def ganador(self, color):
+        pygame.init()
+        screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
+
+        # Cargar imagen de fondo según el color
+        if color == "blanco":
+            background_image = pygame.image.load("lib/dragonBlanco.jpeg").convert()
+        elif color == "negro":
+            background_image = pygame.image.load("lib/dragonNegro.jpeg").convert()
+        else:
+            # Color no válido, salir sin mostrar imagen
+            return
+
+        background_image = pygame.transform.scale(background_image, (1280, 720))
+
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            screen.blit(background_image, (0, 0))
+            pygame.display.flip()
+
+        pygame.quit()
 
     def findPiecesOnBoard(self):
         white_count = 0
