@@ -19,7 +19,7 @@ Blanco = (255,255,255)
 #color del tablero
 ColorTablero = (125,125,125)
 sp= 38
-alt=703
+alt=696
 
 class nuevoSprite(pygame.sprite.Sprite):
     def __init__(self, array_indexes, location, size, color):
@@ -107,8 +107,6 @@ def getNeighbors(y, x, board_shape):
     #retorna una list con los "vecinos" que son las libertades posibles que tiene la ficha
     return neighbors
 
-
-
 def spriteClick(posicion_sprite, posicion_click):
     sprite_y, sprite_x = posicion_sprite
     click_y, click_x = posicion_click
@@ -118,7 +116,6 @@ def spriteClick(posicion_sprite, posicion_click):
             return True
 
     return False
-
 
 class Main:
     def __init__(self):
