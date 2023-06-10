@@ -273,7 +273,7 @@ class Main:
                         ejecutando = False
                 cont=0
             else:
-                ramon = list()
+                listiña = []
                 print("Turno del bot")
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
@@ -281,10 +281,9 @@ class Main:
 
                 for sprite in self.sprites:
                     if sprite.occupied and sprite.color == Negro:
-                        a = getNeighbors(sprite.location,19,19)
-                        print(a)
-
-
+                        a = getNeighbors(sprite.location,(19, 19))
+                       listiña.append(a)
+                numero_entero = random.randint(0, listiña.lengh)
 
 
 
