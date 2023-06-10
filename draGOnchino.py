@@ -221,12 +221,13 @@ class Main:
 
                         # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                         clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
-                        # Sonido al poner ficha
-                        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
-                        sonidoFicha.play(0)
-                        sonidoFicha.set_volume(0.05)
+
                         #asegurarse de que se ha hecho clic en al menos un sprite
                         if clicked_sprites:
+                            # Sonido al poner ficha
+                            sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
+                            sonidoFicha.play(0)
+                            sonidoFicha.set_volume(0.05)
                             clicked_sprite = clicked_sprites[0]
                             #verificar si el sprite clikeado no está ocupado.
                             if not clicked_sprite.occupied:
