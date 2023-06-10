@@ -5,9 +5,10 @@ clases y constantes proporcionadas por la biblioteca.
 """
 import pygame
 # constantes para eventos, teclas y botones del mouse.
-from pygame.locals import MOUSEBUTTONUP, QUIT,K_ESCAPE, KEYDOWN, K_p
+from pygame.locals import MOUSEBUTTONDOWN,MOUSEBUTTONUP, QUIT,K_ESCAPE, KEYDOWN, K_p
 import numpy as np
 import time
+import random
 """
 MOUSEBUTTONUP: Esta constante representa el evento de soltar un botón del mouse.
 QUIT: Esta constante representa el evento de salir de la aplicación.
@@ -132,7 +133,6 @@ class Main:
         self.screen = None
         self.sprite_array = None
         self.sprites = None
-
     def init(self, komi=2.5):
         # inicializar la biblioteca pygame y prepararla para su uso
         pygame.init()
@@ -215,10 +215,10 @@ class Main:
                     """
                     self.dibujarSprites()
 
-                    if event.type == MOUSEBUTTONUP:
+                    if event.type == MOUSEBUTTONDOWN:
                         # posición actual del cursor del mouse en la ventana del juego (x,y)
                         pos = pygame.mouse.get_pos()
-                        print(pos)
+
                         # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                         clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
                         # Sonido al poner ficha
@@ -271,9 +271,12 @@ class Main:
                             self.pasar()
                     elif event.type == QUIT:
                         ejecutando = False
-                cont=0
+
             else:
-                listiña = []
+                if self.passed_in_a_row==1:
+                    if self.calculateWhoWon()=="White":
+                        self.pasar()
+                listiña=[]
                 print("Turno del bot")
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
@@ -281,13 +284,19 @@ class Main:
 
                 for sprite in self.sprites:
                     if sprite.occupied and sprite.color == Negro:
-                        a = getNeighbors(sprite.location,(19, 19))
-                       listiña.append(a)
-                numero_entero = random.randint(0, listiña.lengh)
+                        #vecinos = getNeighbors(sprite.location[1],(19,19))
+                        for loc in self.locations:
+                            if sprite.location==loc[1]:
+                                vecinos = getNeighbors(loc[0][1],loc[0][0], (19, 19))
+                                for vec in vecinos:
+                                    spritiño = self.sprite_array[vec[0]][vec[1]]
+                                    if not spritiño.occupied:
+                                        listiña.append(spritiño.location)
 
 
 
-                if cont == 24:
+                if 0 == 0:
+                    pos= random.choice(listiña)
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
                     # Sonido al poner ficha
@@ -336,15 +345,10 @@ class Main:
             pygame.display.update()
         pygame.quit()
 
-
-
-
-
-
     # Iniciar Juego
     def iniciar(self):
         clock = pygame.time.Clock()
-        fps = 30
+        fps = 20
         # Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
         # Ubicamos los Sprites
@@ -379,7 +383,7 @@ class Main:
                 """
                 self.dibujarSprites()
 
-                if event.type == MOUSEBUTTONUP:
+                if event.type == MOUSEBUTTONDOWN:
                     # posición actual del cursor del mouse en la ventana del juego (x,y)
                     pos = pygame.mouse.get_pos()
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
@@ -558,7 +562,6 @@ class Main:
 
         for location in neighbors:
             sprite = self.sprite_array[location[0]][location[1]]
-
             if sprite.occupied or sprite in self.visited:
                 continue
 
@@ -650,8 +653,6 @@ class Main:
 
         # solo testea los vecinos del jugador actual, ya que los del otro no han cambiado
         neighbors = getNeighbors(y, x, black_board.shape)
-        print("vecinos")
-        print(neighbors)
 
         #asigna a tablero el tablero del jugador actual, y a la otra el otro
         board = white_board if turn_white else black_board
@@ -662,11 +663,8 @@ class Main:
 
         # testear movimientos suicida
         original_pos = (y, x)
-        print("original_pos: ")
-        print(original_pos)
+
         original_pos = original_pos[::-1]
-        print("original_pos: ")
-        print(original_pos)
 
         # testear suicidio
         #array 19x19 tipo booleano
@@ -678,8 +676,6 @@ class Main:
         for pos in neighbors:
             #La línea de código pos = pos[::-1] invierte el orden de los elementos en la variable pos.
             pos = pos[::-1]
-            print("posicion vecino??")
-            print(pos)
 
             if not opponent_board[pos]:
                 continue
