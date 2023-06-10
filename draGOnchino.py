@@ -19,8 +19,8 @@ Negro = (0, 0, 0)
 Blanco = (255,255,255)
 #color del tablero
 ColorTablero = (125,125,125)
-sp= 38
-alt=696
+sp= 33
+alt=608
 
 class nuevoSprite(pygame.sprite.Sprite):
     def __init__(self, array_indexes, location, size, color):
@@ -38,26 +38,34 @@ def pantallaInicio():
     pygame.init()
     pygame.mixer.get_init()
     # Dimension de la pantalla de inicio
-    screen = pygame.display.set_mode((1280, 720),pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((1100, 630))
     #Imagen inicial de fondo
     background_image = pygame.image.load("lib/portada.png").convert()
-    background_image = pygame.transform.scale(background_image, (1280, 720))
-
-    # Boton
-    button_image = pygame.image.load("lib/boton.png").convert_alpha()
-    button_image = pygame.transform.scale(button_image, (250, 250))
-
+    background_image = pygame.transform.scale(background_image, (1100, 630))
+# Boton jcj
+    botonImagen = pygame.image.load("lib/boton.png").convert_alpha()
+    botonImagen = pygame.transform.scale(botonImagen,(213,66))
     # objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
-    botonInicio = button_image.get_rect()
+    botonJ = botonImagen.get_rect()
     # establece la posición horizontal (x) del rectángulo
-    botonInicio.x = (screen.get_width() - botonInicio.width) // 2
+    botonJ.x = (screen.get_width() - botonJ.width) // 2
     # establece la posición vertical (y) del rectángulo
-    botonInicio.y = 464
-
+    botonJ.y = 400
+# Boton BOT
+    button_image = pygame.image.load("lib/boton.png").convert_alpha()
+    button_image = pygame.transform.scale(button_image, (213,66))
+    # objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
+    botonBot = button_image.get_rect()
+    # establece la posición horizontal (x) del rectángulo
+    botonBot.x = (screen.get_width() - botonBot.width) // 2
+    # establece la posición vertical (y) del rectángulo
+    botonBot.y = 500
     # renderizar la imagen de fondo
     screen.blit(background_image, (0, 0))
-    # renderiza la imagen del botón
-    screen.blit(button_image, botonInicio)
+    # renderiza la imagen del botón Bot
+    screen.blit(button_image, botonBot)
+    # renderiza la imagen del botón Jugador
+    screen.blit(botonImagen, botonJ)
     # actualizar la pantalla, mostrando los cambios realizados
     pygame.display.flip()
     #Musica menu principal
@@ -65,8 +73,6 @@ def pantallaInicio():
     musicaInicio.load('lib/Sonido/musica_inicio.mp3')
     musicaInicio.play(-1)
     musicaInicio.set_volume(0.05)
-
-
 
     #Bucle de pantalla de inicio para capturar los eventos del teclado o mouse
     Ejecutando = True
@@ -84,7 +90,13 @@ def pantallaInicio():
                 Se determina si el evento esta sobre la posicion del boton,
                 para iniciar el juego
                 """
-                if botonInicio.collidepoint(event.pos):
+                if botonJ.collidepoint(event.pos):
+                    if __name__ == '__main__':
+                        musicaInicio.stop()
+                        aplicacion = Main()
+                        aplicacion.init()
+                        aplicacion.iniciar()
+                if botonBot.collidepoint(event.pos):
                     if __name__ == '__main__':
                         musicaInicio.stop()
                         aplicacion = Main()
@@ -137,8 +149,8 @@ class Main:
         # inicializar la biblioteca pygame y prepararla para su uso
         pygame.init()
         #Dimensiones de la pantalla
-        anchoDePantalla = 1280
-        altoDePantalla = 720
+        anchoDePantalla = 1100
+        altoDePantalla = 630
 
 
         # Asignamos un objeto de Sprites
@@ -154,7 +166,7 @@ class Main:
 
 
         #creación de una ventana de visualización
-        self.screen = pygame.display.set_mode((anchoDePantalla, altoDePantalla),pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((anchoDePantalla, altoDePantalla))
 
         #La siguiente linea indica el turno de cada jugador
         pygame.display.set_caption('PELEA! | Comienza Dragon Negro')
@@ -189,7 +201,23 @@ class Main:
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
         background_image = pygame.image.load('lib/montaña.jpg')
-        background_image = pygame.transform.scale(background_image, (1280, 720))
+        background_image = pygame.transform.scale(background_image, (1100, 630))
+        # IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
+        turnoImagen = pygame.image.load('lib/turnoColor.png')
+        turnoImagen = pygame.transform.scale(turnoImagen, (318, 111))
+        ubicacionTurno = self.screen.get_width() - 400
+        #Botones para pasar menu y rendirse
+        botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
+        botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
+        botonPasar = botonPasarImagen.get_rect()
+        botonPasar.x = self.screen.get_width() - 330
+        botonPasar.y = 200
+        botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
+        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
+        botonMenu = botonMenuImagen.get_rect()
+        botonMenu.x = self.screen.get_width() - 330
+        botonMenu.y = 260
+
 
         bot = 0
         cont = 0
@@ -208,6 +236,10 @@ class Main:
                 for event in pygame.event.get():
                     # Creamos el fondo de la pantalla
                     self.screen.blit(background_image, (0, 0))
+                    #Dibujamos botones al costado del tablero
+                    self.screen.blit(turnoImagen,(ubicacionTurno,0))
+                    self.screen.blit(botonPasarImagen,botonPasar)
+                    self.screen.blit(botonMenuImagen,botonMenu)
                     # Dibujamos el tablero
                     self.dibujarTablero()
                     """
@@ -221,7 +253,13 @@ class Main:
 
                         # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                         clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
-
+                        if botonPasar.collidepoint(event.pos):
+                            if __name__ == '__main__':
+                                self.pasar()
+                        if botonMenu.collidepoint(event.pos):
+                            if __name__ == '__main__':
+                                pantallaInicio()
+                                pygame.quit()
                         #asegurarse de que se ha hecho clic en al menos un sprite
                         if clicked_sprites:
                             # Sonido al poner ficha
@@ -360,8 +398,22 @@ class Main:
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
         background_image = pygame.image.load('lib/montaña.jpg')
-        background_image = pygame.transform.scale(background_image, (1280, 720))
-
+        background_image = pygame.transform.scale(background_image, (1100, 630))
+        #IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
+        turnoImagen = pygame.image.load('lib/turnoColor.png')
+        turnoImagen = pygame.transform.scale(turnoImagen,(318,111))
+        ubicacionTurno = self.screen.get_width() - 400
+        # Botones para pasar menu y rendirse
+        botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
+        botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
+        botonPasar = botonPasarImagen.get_rect()
+        botonPasar.x = self.screen.get_width() - 330
+        botonPasar.y = 200
+        botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
+        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
+        botonMenu = botonMenuImagen.get_rect()
+        botonMenu.x = self.screen.get_width() - 330
+        botonMenu.y = 260
         while ejecutando:
             clock.tick(fps)
             if self.gameover:
@@ -377,6 +429,11 @@ class Main:
                 # Creamos el fondo de la pantalla
 
                 self.screen.blit(background_image, (0, 0))
+                self.screen.blit(turnoImagen,(ubicacionTurno,0))
+                # Dibujamos botones al costado del tablero
+                self.screen.blit(turnoImagen, (ubicacionTurno, 0))
+                self.screen.blit(botonPasarImagen, botonPasar)
+                self.screen.blit(botonMenuImagen,botonMenu)
                 # Dibujamos el tablero
                 self.dibujarTablero()
                 """
@@ -393,6 +450,14 @@ class Main:
                     sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
                     sonidoFicha.play(0)
                     sonidoFicha.set_volume(0.05)
+                    #logica botones costado
+                    if botonPasar.collidepoint(event.pos):
+                        if __name__ == '__main__':
+                            self.pasar()
+                    if botonMenu.collidepoint(event.pos):
+                        if __name__ == '__main__':
+                            pantallaInicio()
+                            pygame.quit()
                     #asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites:
                         clicked_sprite = clicked_sprites[0]
@@ -480,8 +545,15 @@ class Main:
 
     def ganador(self, color):
         pygame.init()
-        screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
-
+        screen = pygame.display.set_mode((1100, 630))
+        # Boton para volver al menu
+        botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
+        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
+        botonMenu = botonMenuImagen.get_rect()
+        # establece la posición horizontal (x) del rectángulo
+        botonMenu.x = (self.screen.get_width() / 2) - 85
+        # establece la posición vertical (y) del rectángulo
+        botonMenu.y = 550
         # Cargar imagen de fondo según el color
         if color == "blanco":
             background_image = pygame.image.load("lib/dragonBlanco.jpeg").convert()
@@ -491,15 +563,23 @@ class Main:
             # Color no válido, salir sin mostrar imagen
             return
 
-        background_image = pygame.transform.scale(background_image, (1280, 720))
+        background_image = pygame.transform.scale(background_image, (1100, 630))
 
         running = True
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == MOUSEBUTTONDOWN:
+                    # posición actual del cursor del mouse en la ventana del juego (x,y)
+                    pos = pygame.mouse.get_pos()
 
+                    if botonMenu.collidepoint(event.pos):
+                        if __name__ == '__main__':
+                            pantallaInicio()
+                            pygame.quit()
             screen.blit(background_image, (0, 0))
+            screen.blit(botonMenuImagen,botonMenu)
             pygame.display.flip()
 
         pygame.quit()
