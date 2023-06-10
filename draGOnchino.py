@@ -273,7 +273,7 @@ class Main:
                         ejecutando = False
                 cont=0
             else:
-                array = []
+                ramon = list()
                 print("Turno del bot")
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
@@ -281,14 +281,14 @@ class Main:
 
                 for sprite in self.sprites:
                     if sprite.occupied and sprite.color == Negro:
-                        
+                        a = getNeighbors(sprite.location,19,19)
+                        print(a)
 
 
 
 
 
-
-                if cont == 0:
+                if cont == 24:
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
                     # Sonido al poner ficha
