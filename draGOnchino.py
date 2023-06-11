@@ -217,8 +217,14 @@ class Main:
         botonMenu = botonMenuImagen.get_rect()
         botonMenu.x = self.screen.get_width() - 330
         botonMenu.y = 260
-
-
+        # Creamos el fondo de la pantalla
+        self.screen.blit(background_image, (0, 0))
+        # Dibujamos el tablero
+        self.dibujarTablero()
+        # Dibujamos botones al costado del tablero
+        self.screen.blit(turnoImagen, (ubicacionTurno, 0))
+        self.screen.blit(botonPasarImagen, botonPasar)
+        self.screen.blit(botonMenuImagen, botonMenu)
         bot = 0
         cont = 0
         while ejecutando:
@@ -234,14 +240,6 @@ class Main:
 
             if self.turno % 2 == 0:
                 for event in pygame.event.get():
-                    # Creamos el fondo de la pantalla
-                    self.screen.blit(background_image, (0, 0))
-                    #Dibujamos botones al costado del tablero
-                    self.screen.blit(turnoImagen,(ubicacionTurno,0))
-                    self.screen.blit(botonPasarImagen,botonPasar)
-                    self.screen.blit(botonMenuImagen,botonMenu)
-                    # Dibujamos el tablero
-                    self.dibujarTablero()
                     """
                     Dibujamos las ubicaciones de los Sprites
                     """
@@ -320,7 +318,10 @@ class Main:
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
                 self.dibujarSprites()
-
+                # Dibujamos botones al costado del tablero
+                self.screen.blit(turnoImagen, (ubicacionTurno, 0))
+                self.screen.blit(botonPasarImagen, botonPasar)
+                self.screen.blit(botonMenuImagen, botonMenu)
                 for sprite in self.sprites:
                     if sprite.occupied and sprite.color == Negro:
                         #vecinos = getNeighbors(sprite.location[1],(19,19))
@@ -414,8 +415,17 @@ class Main:
         botonMenu = botonMenuImagen.get_rect()
         botonMenu.x = self.screen.get_width() - 330
         botonMenu.y = 260
+        # Creamos el fondo de la pantalla
+        self.screen.blit(background_image, (0, 0))
+        # Dibujamos el tablero
+        self.dibujarTablero()
         while ejecutando:
             clock.tick(fps)
+            # Dibujamos botones al costado del tablero
+            self.screen.blit(turnoImagen, (ubicacionTurno, 0))
+            self.screen.blit(turnoImagen, (ubicacionTurno, 0))
+            self.screen.blit(botonPasarImagen, botonPasar)
+            self.screen.blit(botonMenuImagen, botonMenu)
             if self.gameover:
                 ejecutando = False
                 if self.calculateWhoWon() == 'White':
@@ -424,18 +434,7 @@ class Main:
                 else:
                     # llamar a pantalla de ganador con ganador negro
                     self.ganador("negro")
-
             for event in pygame.event.get():
-                # Creamos el fondo de la pantalla
-
-                self.screen.blit(background_image, (0, 0))
-                self.screen.blit(turnoImagen,(ubicacionTurno,0))
-                # Dibujamos botones al costado del tablero
-                self.screen.blit(turnoImagen, (ubicacionTurno, 0))
-                self.screen.blit(botonPasarImagen, botonPasar)
-                self.screen.blit(botonMenuImagen,botonMenu)
-                # Dibujamos el tablero
-                self.dibujarTablero()
                 """
                 Dibujamos las ubicaciones de los Sprites
                 """
