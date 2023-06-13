@@ -21,7 +21,10 @@ Blanco = (255,255,255)
 ColorTablero = (125,125,125)
 sp= 33
 alt=608
-
+imagen1 = pygame.image.load("lib/FichaNegra.png")
+imagen2 = pygame.image.load("lib/FichaBlanca.png")
+imagen1 = pygame.transform.scale(imagen1, (40, 40))
+imagen2 = pygame.transform.scale(imagen2, (40, 40))
 class nuevoSprite(pygame.sprite.Sprite):
     def __init__(self, array_indexes, location, size, color):
         super(nuevoSprite, self).__init__()
@@ -853,9 +856,8 @@ class Main:
                 x, y = entity.location
                 loc = (x-20,y-20)
                 #pygame.draw.circle(self.screen, entity.color, loc, 15, 0)
-                imagen = pygame.image.load("lib/FichaNegra.png") if entity.color==Negro else pygame.image.load(
-                    "lib/FichaBlanca.png")
-                imagen = pygame.transform.scale(imagen, (40, 40))
+                imagen = imagen1 if entity.color==Negro else imagen2
+
 
                 self.screen.blit(imagen, loc)
 
