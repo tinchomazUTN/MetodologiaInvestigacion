@@ -299,8 +299,8 @@ class Main:
 
                                 else:
                                     self.passed_in_a_row = 0
-                                    person = 'Black' if not self.turno % 2 else 'White'
-                                    pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
+                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
+                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
                     elif event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
                             ejecutando = False
@@ -384,7 +384,7 @@ class Main:
                                     self.passed_in_a_row = 0
 
                                     person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
-                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}\'!')
+                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}!')
                     cont += 1
 
             pygame.display.update()
@@ -521,8 +521,8 @@ class Main:
         self.turno += 1
         self.turno_blanco = True if not self.turno_blanco else False
 
-        jugador = 'Black' if not self.turno % 2 else 'White'
-        pygame.display.set_caption(f'Batalla! | Es turno del jugador {jugador}')
+        jugador = 'NEGRO' if not self.turno % 2 else 'BLANCO'
+        pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {jugador}')
 
     #llama a la pantalla de final del juego
     def terminar(self):
