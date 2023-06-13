@@ -193,12 +193,13 @@ class Main:
 
     def iniciarVSbot(self):
         clock = pygame.time.Clock()
-        fps = 5
+        fps = 10
         # Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
         # Ubicamos los Sprites
         self.ubicarSprites()
         ejecutando = True
+        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
         musicaPartida = pygame.mixer.music
         musicaPartida.load('lib/Sonido/partida.mp3')
         musicaPartida.play(-1)
@@ -264,7 +265,6 @@ class Main:
                         #asegurarse de que se ha hecho clic en al menos un sprite
                         if clicked_sprites:
                             # Sonido al poner ficha
-                            sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
                             sonidoFicha.play(0)
                             sonidoFicha.set_volume(0.05)
                             clicked_sprite = clicked_sprites[0]
@@ -299,7 +299,6 @@ class Main:
 
                                 else:
                                     self.passed_in_a_row = 0
-
                                     person = 'Black' if not self.turno % 2 else 'White'
                                     pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
                     elif event.type == KEYDOWN:
@@ -313,11 +312,14 @@ class Main:
                         ejecutando = False
 
             else:
+
                 if self.passed_in_a_row==1:
                     if self.calculateWhoWon()=="White":
                         self.pasar()
+
+
                 listiña=[]
-                print("Turno del bot")
+                print("cacaacac")
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
                 self.dibujarSprites()
@@ -381,8 +383,8 @@ class Main:
                                 else:
                                     self.passed_in_a_row = 0
 
-                                    person = 'Black' if not self.turno % 2 else 'White'
-                                    pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
+                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
+                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}\'!')
                     cont += 1
 
             pygame.display.update()
@@ -448,10 +450,7 @@ class Main:
                     pos = pygame.mouse.get_pos()
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
-                    # Sonido al poner ficha
-                    sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
-                    sonidoFicha.play(0)
-                    sonidoFicha.set_volume(0.05)
+
                     #logica botones costado
                     if botonPasar.collidepoint(event.pos):
                         if __name__ == '__main__':
@@ -463,6 +462,10 @@ class Main:
                     #asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites:
                         clicked_sprite = clicked_sprites[0]
+                        # Sonido al poner ficha
+                        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
+                        sonidoFicha.play(0)
+                        sonidoFicha.set_volume(0.05)
                         #verificar si el sprite clikeado no está ocupado.
                         if not clicked_sprite.occupied:
                             self.turno += 1
@@ -493,8 +496,8 @@ class Main:
                             else:
                                 self.passed_in_a_row = 0
 
-                                person = 'Black' if not self.turno % 2 else 'White'
-                                pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
+                                person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
+                                pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}\'!')
 
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
