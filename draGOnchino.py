@@ -325,8 +325,6 @@ class Main:
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
                 self.dibujarSprites()
-                # Dibujamos botones al costado del tablero
-               
                 self.screen.blit(botonPasarImagen, botonPasar)
                 self.screen.blit(botonMenuImagen, botonMenu)
                 for sprite in self.sprites:
@@ -340,13 +338,10 @@ class Main:
                                     if not spritiño.occupied:
                                         listiña.append(spritiño.location)
 
-
-
                 if 0 == 0:
                     pos= random.choice(listiña)
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
-                    
                     # asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites:
                             clicked_sprite = clicked_sprites[0]
@@ -396,7 +391,7 @@ class Main:
     # Iniciar Juego
     def iniciar(self):
         clock = pygame.time.Clock()
-        fps = 20
+        fps = 30
         # Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
         # Ubicamos los Sprites
@@ -407,37 +402,10 @@ class Main:
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
         background_image = pygame.image.load('lib/montaña.jpg')
-        background_image = pygame.transform.scale(background_image, (620, 740))
-        #IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
-        turnoImagenB = pygame.image.load('lib/turnocolorB.png')
-        turnoImagenB = pygame.transform.scale(turnoImagenB,(318,111))
-        turnoImagenN = pygame.image.load('lib/turnocolorN.png')
-        turnoImagenN = pygame.transform.scale(turnoImagenN,(318,111))
-        ubicacionTurno = self.screen.get_width() - 610
-        # Botones para pasar menu y rendirse
-        botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
-        botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
-        botonPasar = botonPasarImagen.get_rect()
-        botonPasar.x = self.screen.get_width() - 240
-        botonPasar.y = 620
-        botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
-        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
-        botonMenu = botonMenuImagen.get_rect()
-        botonMenu.x = self.screen.get_width() - 240
-        botonMenu.y = 680
-        # Creamos el fondo de la pantalla
-        self.screen.blit(background_image, (0, 0))
-        # Dibujamos el tablero
-        self.dibujarTablero()
+        background_image = pygame.transform.scale(background_image, (1280, 720))
+
         while ejecutando:
             clock.tick(fps)
-            # Dibujamos botones al costado del tablero
-            if self.turno % 2 == 0 : 
-                self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
-            else :
-                self.screen.blit(turnoImagenB, (ubicacionTurno, 620))
-            self.screen.blit(botonPasarImagen, botonPasar)
-            self.screen.blit(botonMenuImagen, botonMenu)
             if self.gameover:
                 ejecutando = False
                 if self.calculateWhoWon() == 'White':
@@ -446,33 +414,30 @@ class Main:
                 else:
                     # llamar a pantalla de ganador con ganador negro
                     self.ganador("negro")
+
             for event in pygame.event.get():
+                # Creamos el fondo de la pantalla
+
+                self.screen.blit(background_image, (0, 0))
+                # Dibujamos el tablero
+                self.dibujarTablero()
                 """
                 Dibujamos las ubicaciones de los Sprites
                 """
                 self.dibujarSprites()
 
-                if event.type == MOUSEBUTTONDOWN:
+                if event.type == MOUSEBUTTONUP:
                     # posición actual del cursor del mouse en la ventana del juego (x,y)
                     pos = pygame.mouse.get_pos()
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
-
-                    #logica botones costado
-                    if botonPasar.collidepoint(event.pos):
-                        if __name__ == '__main__':
-                            self.pasar()
-                    if botonMenu.collidepoint(event.pos):
-                        if __name__ == '__main__':
-                            pantallaInicio()
-                            pygame.quit()
+                    # Sonido al poner ficha
+                    sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
+                    sonidoFicha.play(0)
+                    sonidoFicha.set_volume(0.05)
                     #asegurarse de que se ha hecho clic en al menos un sprite
                     if clicked_sprites:
                         clicked_sprite = clicked_sprites[0]
-                        # Sonido al poner ficha
-                        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
-                        sonidoFicha.play(0)
-                        sonidoFicha.set_volume(0.05)
                         #verificar si el sprite clikeado no está ocupado.
                         if not clicked_sprite.occupied:
                             self.turno += 1
@@ -503,9 +468,10 @@ class Main:
                             else:
                                 self.passed_in_a_row = 0
 
-                                person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
-                                pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}\'!')
+                                person = 'Black' if not self.turno % 2 else 'White'
+                                pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
 
+                    print()
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         ejecutando = False
