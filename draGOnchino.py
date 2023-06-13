@@ -152,13 +152,11 @@ class Main:
         # inicializar la biblioteca pygame y prepararla para su uso
         pygame.init()
         #Dimensiones de la pantalla
-        anchoDePantalla = 1100
-        altoDePantalla = 630
-
+        anchoDePantalla = 620
+        altoDePantalla = 740
 
         # Asignamos un objeto de Sprites
         self.sprites = pygame.sprite.Group()
-
         """
         Es una matriz 2D (lista de listas) 
         que se inicializa con 19 filas y 19 columnas. 
@@ -192,8 +190,8 @@ class Main:
         self.gameover = False
 
     def iniciarVSbot(self):
-        clock = pygame.time.Clock()
-        fps = 10
+        #clock = pygame.time.Clock()
+        #fps = 300
         # Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
         # Ubicamos los Sprites
@@ -205,24 +203,24 @@ class Main:
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
         background_image = pygame.image.load('lib/montaña.jpg')
-        background_image = pygame.transform.scale(background_image, (1100, 630))
+        background_image = pygame.transform.scale(background_image, (620, 740))
         # IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
-        turnoImagenB = pygame.image.load('lib/turnocolorB.png')
+
         turnoImagenN = pygame.image.load('lib/turnocolorN.png')
-        turnoImagenB = pygame.transform.scale(turnoImagenB, (318, 111))
+
         turnoImagenN = pygame.transform.scale(turnoImagenN, (318, 111))
-        ubicacionTurno = self.screen.get_width() - 400
+        ubicacionTurno = self.screen.get_width() - 610
         #Botones para pasar menu y rendirse
         botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
         botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
         botonPasar = botonPasarImagen.get_rect()
-        botonPasar.x = self.screen.get_width() - 330
-        botonPasar.y = 200
+        botonPasar.x = self.screen.get_width() - 240
+        botonPasar.y = 620
         botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
         botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
         botonMenu = botonMenuImagen.get_rect()
-        botonMenu.x = self.screen.get_width() - 330
-        botonMenu.y = 260
+        botonMenu.x = self.screen.get_width() - 240
+        botonMenu.y = 680
         # Creamos el fondo de la pantalla
         self.screen.blit(background_image, (0, 0))
         # Dibujamos el tablero
@@ -233,12 +231,10 @@ class Main:
         self.screen.blit(botonMenuImagen, botonMenu)
         bot = 0
         cont = 0
+
         while ejecutando:
-            clock.tick(fps)
-            if self.turno % 2 == 0 : 
-                self.screen.blit(turnoImagenN, (ubicacionTurno, 0))
-            else :
-                self.screen.blit(turnoImagenB, (ubicacionTurno, 0))
+            #clock.tick(fps)
+            self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
             if self.gameover:
                 ejecutando = False
                 if self.calculateWhoWon() == 'White':
@@ -411,24 +407,24 @@ class Main:
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
         background_image = pygame.image.load('lib/montaña.jpg')
-        background_image = pygame.transform.scale(background_image, (1100, 630))
+        background_image = pygame.transform.scale(background_image, (620, 740))
         #IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
         turnoImagenB = pygame.image.load('lib/turnocolorB.png')
         turnoImagenB = pygame.transform.scale(turnoImagenB,(318,111))
         turnoImagenN = pygame.image.load('lib/turnocolorN.png')
         turnoImagenN = pygame.transform.scale(turnoImagenN,(318,111))
-        ubicacionTurno = self.screen.get_width() - 400
+        ubicacionTurno = self.screen.get_width() - 610
         # Botones para pasar menu y rendirse
         botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
         botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
         botonPasar = botonPasarImagen.get_rect()
-        botonPasar.x = self.screen.get_width() - 330
-        botonPasar.y = 200
+        botonPasar.x = self.screen.get_width() - 240
+        botonPasar.y = 620
         botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
         botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
         botonMenu = botonMenuImagen.get_rect()
-        botonMenu.x = self.screen.get_width() - 330
-        botonMenu.y = 260
+        botonMenu.x = self.screen.get_width() - 240
+        botonMenu.y = 680
         # Creamos el fondo de la pantalla
         self.screen.blit(background_image, (0, 0))
         # Dibujamos el tablero
@@ -437,9 +433,9 @@ class Main:
             clock.tick(fps)
             # Dibujamos botones al costado del tablero
             if self.turno % 2 == 0 : 
-                self.screen.blit(turnoImagenN, (ubicacionTurno, 0))
+                self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
             else :
-                self.screen.blit(turnoImagenB, (ubicacionTurno, 0))
+                self.screen.blit(turnoImagenB, (ubicacionTurno, 620))
             self.screen.blit(botonPasarImagen, botonPasar)
             self.screen.blit(botonMenuImagen, botonMenu)
             if self.gameover:
