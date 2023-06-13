@@ -46,7 +46,7 @@ def pantallaInicio():
     background_image = pygame.image.load("lib/portada.png").convert()
     background_image = pygame.transform.scale(background_image, (1100, 630))
 # Boton jcj
-    botonImagen = pygame.image.load("lib/boton.png").convert_alpha()
+    botonImagen = pygame.image.load("lib/JcJ.png").convert_alpha()
     botonImagen = pygame.transform.scale(botonImagen,(213,66))
     # objeto rectángulo que representa las dimensiones y la posición del botón en la interfaz gráfica.
     botonJ = botonImagen.get_rect()
