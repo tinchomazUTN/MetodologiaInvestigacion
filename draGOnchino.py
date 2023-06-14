@@ -190,8 +190,8 @@ class Main:
         self.gameover = False
 
     def iniciarVSbot(self):
-        #clock = pygame.time.Clock()
-        #fps = 300
+        clock = pygame.time.Clock()
+        fps = 30
         # Generamos las ubicaciones de los Sprites
         self.ubicacionSprites()
         # Ubicamos los Sprites
@@ -207,8 +207,9 @@ class Main:
         # IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
 
         turnoImagenN = pygame.image.load('lib/turnocolorN.png')
-
         turnoImagenN = pygame.transform.scale(turnoImagenN, (318, 111))
+        turnoImagenB = pygame.image.load('lib/turnocolorB.png')
+        turnoImagenB = pygame.transform.scale(turnoImagenB, (318, 111))
         ubicacionTurno = self.screen.get_width() - 610
         #Botones para pasar menu y rendirse
         botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
@@ -233,7 +234,7 @@ class Main:
         cont = 0
 
         while ejecutando:
-            #clock.tick(fps)
+            clock.tick(fps)
             self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
             if self.gameover:
                 ejecutando = False
@@ -397,15 +398,45 @@ class Main:
         # Ubicamos los Sprites
         self.ubicarSprites()
         ejecutando = True
+        sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
         musicaPartida = pygame.mixer.music
         musicaPartida.load('lib/Sonido/partida.mp3')
         musicaPartida.play(-1)
         musicaPartida.set_volume(0.05)
         background_image = pygame.image.load('lib/montaña.jpg')
-        background_image = pygame.transform.scale(background_image, (1280, 720))
+        background_image = pygame.transform.scale(background_image, (620, 740))
+        # IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
+
+        turnoImagenN = pygame.image.load('lib/turnocolorN.png')
+        turnoImagenN = pygame.transform.scale(turnoImagenN, (318, 111))
+        turnoImagenB = pygame.image.load('lib/turnocolorB.png')
+        turnoImagenB = pygame.transform.scale(turnoImagenB, (318, 111))
+        ubicacionTurno = self.screen.get_width() - 610
+        # Botones para pasar menu y rendirse
+        botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
+        botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
+        botonPasar = botonPasarImagen.get_rect()
+        botonPasar.x = self.screen.get_width() - 240
+        botonPasar.y = 620
+        botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
+        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
+        botonMenu = botonMenuImagen.get_rect()
+        botonMenu.x = self.screen.get_width() - 240
+        botonMenu.y = 680
+        # Creamos el fondo de la pantalla
+        self.screen.blit(background_image, (0, 0))
+        # Dibujamos el tablero
+        self.dibujarTablero()
+        # Dibujamos botones al costado del tablero
+
+        self.screen.blit(botonPasarImagen, botonPasar)
+        self.screen.blit(botonMenuImagen, botonMenu)
+        bot = 0
+        cont = 0
 
         while ejecutando:
             clock.tick(fps)
+            self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
             if self.gameover:
                 ejecutando = False
                 if self.calculateWhoWon() == 'White':
@@ -415,73 +446,156 @@ class Main:
                     # llamar a pantalla de ganador con ganador negro
                     self.ganador("negro")
 
-            for event in pygame.event.get():
-                # Creamos el fondo de la pantalla
+            if self.turno % 2 == 0:
+                for event in pygame.event.get():
+                    """
+                    Dibujamos las ubicaciones de los Sprites
+                    """
+                    self.dibujarSprites()
 
-                self.screen.blit(background_image, (0, 0))
-                # Dibujamos el tablero
-                self.dibujarTablero()
-                """
-                Dibujamos las ubicaciones de los Sprites
-                """
-                self.dibujarSprites()
+                    if event.type == MOUSEBUTTONDOWN:
+                        # posición actual del cursor del mouse en la ventana del juego (x,y)
+                        pos = pygame.mouse.get_pos()
 
-                if event.type == MOUSEBUTTONUP:
-                    # posición actual del cursor del mouse en la ventana del juego (x,y)
-                    pos = pygame.mouse.get_pos()
-                    # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
-                    clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
-                    # Sonido al poner ficha
-                    sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
-                    sonidoFicha.play(0)
-                    sonidoFicha.set_volume(0.05)
-                    #asegurarse de que se ha hecho clic en al menos un sprite
-                    if clicked_sprites:
-                        clicked_sprite = clicked_sprites[0]
-                        #verificar si el sprite clikeado no está ocupado.
-                        if not clicked_sprite.occupied:
-                            self.turno += 1
-                            # colorcirculo es negro si el numero es impar y blanco si es par
-                            colorCirculo = Negro if self.turno % 2 else Blanco
-
-                            #obtener las coordenadas x , y de la ubicación del sprite clikeado.
-                            x, y = clicked_sprite.location
-                            posicion = (x + 1, y)
-
-                            # Redimensionar la imagen al tamaño deseado (10x10)
-                            imagen = pygame.image.load("lib/FichaNegra.png") if self.turno % 2 else pygame.image.load("lib/FichaBlanca.png")
-
-                            imagen = pygame.transform.scale(imagen, (10, 10))
-                            # Dibujar la imagen en la superficie de pantalla
-                            self.screen.blit(imagen, posicion)
-
-                            clicked_sprite.occupied = True
-                            clicked_sprite.color = colorCirculo
-
-                            # Envia a la funcion el Sprite clickeado
-                            self.capturePieces(*clicked_sprite.array_indexes)
-
+                        # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
+                        clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
+                        if botonPasar.collidepoint(event.pos):
+                            if __name__ == '__main__':
+                                self.pasar()
+                        if botonMenu.collidepoint(event.pos):
+                            if __name__ == '__main__':
+                                pantallaInicio()
+                                pygame.quit()
+                        #asegurarse de que se ha hecho clic en al menos un sprite
+                        if clicked_sprites:
+                            # Sonido al poner ficha
+                            sonidoFicha.play(0)
+                            sonidoFicha.set_volume(0.05)
+                            clicked_sprite = clicked_sprites[0]
+                            #verificar si el sprite clikeado no está ocupado.
                             if not clicked_sprite.occupied:
-                                self.turno -= 1
-                                self.turno_blanco = True if not self.turno_blanco else False
+                                self.turno += 1
+                                # colorcirculo es negro si el numero es impar y blanco si es par
+                                colorCirculo = Negro if self.turno % 2 else Blanco
 
-                            else:
-                                self.passed_in_a_row = 0
+                                #obtener las coordenadas x , y de la ubicación del sprite clikeado.
+                                x, y = clicked_sprite.location
+                                posicion = (x + 1, y)
 
-                                person = 'Black' if not self.turno % 2 else 'White'
-                                pygame.display.set_caption(f'Go Chess | It\'s {person}\'s move!')
+                                """
+                                # Redimensionar la imagen al tamaño deseado (10x10)
+                                imagen = pygame.image.load("lib/FichaNegra.png") if self.turno % 2 else pygame.image.load("lib/FichaBlanca.png")
 
-                    print()
-                elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
+                                imagen = pygame.transform.scale(imagen, (10, 10))
+                                # Dibujar la imagen en la superficie de pantalla
+                                self.screen.blit(imagen, posicion)
+                                """
+
+                                clicked_sprite.occupied = True
+                                clicked_sprite.color = colorCirculo
+
+                                # Envia a la funcion el Sprite clickeado
+                                self.capturePieces(*clicked_sprite.array_indexes)
+
+                                if not clicked_sprite.occupied:
+                                    self.turno -= 1
+                                    self.turno_blanco = True if not self.turno_blanco else False
+
+                                else:
+                                    self.passed_in_a_row = 0
+                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
+                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
+                    elif event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            ejecutando = False
+
+                        elif event.key == K_p:
+                            player = 'White' if not self.turno % 2 else 'Black'
+                            self.pasar()
+                    elif event.type == QUIT:
                         ejecutando = False
 
-                    elif event.key == K_p:
-                        player = 'White' if not self.turno % 2 else 'Black'
-                        self.pasar()
+            #jugador 2
+            else:
+                self.screen.blit(turnoImagenB, (ubicacionTurno, 620))
+                self.screen.blit(background_image, (0, 0))
+                self.dibujarTablero()
+                self.dibujarSprites()
+                self.screen.blit(botonPasarImagen, botonPasar)
+                self.screen.blit(botonMenuImagen, botonMenu)
 
-                elif event.type == QUIT:
-                    ejecutando = False
+                for event in pygame.event.get():
+                    """
+                    Dibujamos las ubicaciones de los Sprites
+                    """
+                    self.dibujarSprites()
+
+                    if event.type == MOUSEBUTTONDOWN:
+                        # posición actual del cursor del mouse en la ventana del juego (x,y)
+                        pos = pygame.mouse.get_pos()
+
+                        # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
+                        clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
+                        if botonPasar.collidepoint(event.pos):
+                            if __name__ == '__main__':
+                                self.pasar()
+                        if botonMenu.collidepoint(event.pos):
+                            if __name__ == '__main__':
+                                pantallaInicio()
+                                pygame.quit()
+                        # asegurarse de que se ha hecho clic en al menos un sprite
+                        if clicked_sprites:
+                            # Sonido al poner ficha
+                            sonidoFicha.play(0)
+                            sonidoFicha.set_volume(0.05)
+                            clicked_sprite = clicked_sprites[0]
+                            # verificar si el sprite clikeado no está ocupado.
+                            if not clicked_sprite.occupied:
+                                self.turno += 1
+                                # colorcirculo es negro si el numero es impar y blanco si es par
+                                colorCirculo = Negro if self.turno % 2 else Blanco
+
+                                # obtener las coordenadas x , y de la ubicación del sprite clikeado.
+                                x, y = clicked_sprite.location
+                                posicion = (x + 1, y)
+
+                                """
+                                # Redimensionar la imagen al tamaño deseado (10x10)
+                                imagen = pygame.image.load("lib/FichaNegra.png") if self.turno % 2 else pygame.image.load("lib/FichaBlanca.png")
+
+                                imagen = pygame.transform.scale(imagen, (10, 10))
+                                # Dibujar la imagen en la superficie de pantalla
+                                self.screen.blit(imagen, posicion)
+                                """
+
+                                clicked_sprite.occupied = True
+                                clicked_sprite.color = colorCirculo
+
+                                # Envia a la funcion el Sprite clickeado
+                                self.capturePieces(*clicked_sprite.array_indexes)
+
+                                if not clicked_sprite.occupied:
+                                    self.turno -= 1
+                                    self.turno_blanco = True if not self.turno_blanco else False
+
+                                else:
+                                    self.passed_in_a_row = 0
+                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
+                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
+                    elif event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            ejecutando = False
+
+                        elif event.key == K_p:
+                            player = 'White' if not self.turno % 2 else 'Black'
+                            self.pasar()
+                    elif event.type == QUIT:
+                        ejecutando = False
+            self.screen.blit(background_image, (0, 0))
+            self.dibujarTablero()
+            self.dibujarSprites()
+            self.screen.blit(botonPasarImagen, botonPasar)
+            self.screen.blit(botonMenuImagen, botonMenu)
             pygame.display.update()
         pygame.quit()
 
