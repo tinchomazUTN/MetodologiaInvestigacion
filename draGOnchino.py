@@ -246,6 +246,7 @@ class Main:
                     self.ganador("negro")
 
             if self.turno % 2 == 0:
+                cont=0
                 for event in pygame.event.get():
                     """
                     Dibujamos las ubicaciones de los Sprites
@@ -304,6 +305,7 @@ class Main:
                                     self.passed_in_a_row = 0
                                     person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
                                     pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
+
                     elif event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
                             ejecutando = False
@@ -314,23 +316,27 @@ class Main:
                     elif event.type == QUIT:
                         ejecutando = False
 
+                    self.screen.blit(background_image, (0, 0))
+                    self.dibujarTablero()
+                    self.dibujarSprites()
+                    self.screen.blit(botonPasarImagen, botonPasar)
+                    self.screen.blit(botonMenuImagen, botonMenu)
+                    self.screen.blit(turnoImagenN,(ubicacionTurno, 595))
             else:
-
+                self.screen.blit(turnoImagenB, (ubicacionTurno, 595))
+                pygame.time.delay(1000)
                 if self.passed_in_a_row==1:
                     if self.calculateWhoWon()=="White":
                         self.pasar()
 
 
                 listiña=[]
-<<<<<<< HEAD
-=======
-                print("cacaacac")
->>>>>>> e546c180874abd600fff207c09757994f7712785
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
                 self.dibujarSprites()
                 self.screen.blit(botonPasarImagen, botonPasar)
                 self.screen.blit(botonMenuImagen, botonMenu)
+                self.screen.blit(turnoImagenB, (ubicacionTurno, 595))
                 for sprite in self.sprites:
                     if sprite.occupied and sprite.color == Negro:
                         #vecinos = getNeighbors(sprite.location[1],(19,19))
@@ -344,6 +350,11 @@ class Main:
 
                 if 0 == 0:
                     pos= random.choice(listiña)
+                    cont = cont + 1
+                    print("contador")
+                    print(cont)
+                    if cont == 200:
+                        self.pasar()
                     # contiene los sprites del grupo self.sprites con los que el cursor del mouse ha colisionado.
                     clicked_sprites = [sprite for sprite in self.sprites if spriteClick(sprite.location, pos)]
                     # asegurarse de que se ha hecho clic en al menos un sprite
@@ -383,11 +394,7 @@ class Main:
 
                                     person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
                                     pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}!')
-                    cont += 1
-                # Sonido al poner ficha
-                sonidoFicha = pygame.mixer.Sound('lib/Sonido/Mover.mp3')
-                sonidoFicha.play(0)
-                sonidoFicha.set_volume(0.05)
+
 
             pygame.display.update()
         pygame.quit()
@@ -439,7 +446,7 @@ class Main:
 
         while ejecutando:
             clock.tick(fps)
-            self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
+            self.screen.blit(turnoImagenN, (ubicacionTurno, 595))
             if self.gameover:
                 ejecutando = False
                 if self.calculateWhoWon() == 'White':
@@ -520,7 +527,7 @@ class Main:
 
             #jugador 2
             else:
-                self.screen.blit(turnoImagenB, (ubicacionTurno, 620))
+                self.screen.blit(turnoImagenB, (ubicacionTurno, 595))
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
                 self.dibujarSprites()
@@ -600,8 +607,9 @@ class Main:
             self.screen.blit(botonPasarImagen, botonPasar)
             self.screen.blit(botonMenuImagen, botonMenu)
             if self.turno % 2 == 0:
-                self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
-            else: self.screen.blit(turnoImagenB, (ubicacionTurno, 620))
+                self.screen.blit(turnoImagenN, (ubicacionTurno, 595))
+            else:
+                self.screen.blit(turnoImagenB, (ubicacionTurno, 595))
             pygame.display.update()
         pygame.quit()
 
