@@ -303,8 +303,9 @@ class Main:
 
                                 else:
                                     self.passed_in_a_row = 0
-                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
-                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
+                                    fichas = self.calcularFichas()
+                                    print("se calcula")
+                                    pygame.display.set_caption(f'PELEA!! | BLANCO {fichas[0]} NEGRO {fichas[1]}')
 
                     elif event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
@@ -392,8 +393,9 @@ class Main:
                                 else:
                                     self.passed_in_a_row = 0
 
-                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
-                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}!')
+                                    fichas = self.calcularFichas()
+                                    print("se calcula")
+                                    pygame.display.set_caption(f'PELEA!! | BLANCO {fichas[0]} NEGRO {fichas[1]}')
 
 
             pygame.display.update()
@@ -443,7 +445,7 @@ class Main:
         self.screen.blit(botonMenuImagen, botonMenu)
         bot = 0
         cont = 0
-        
+
         while ejecutando:
             clock.tick(fps)
             self.screen.blit(turnoImagenN, (ubicacionTurno, 595))
@@ -513,8 +515,9 @@ class Main:
 
                                 else:
                                     self.passed_in_a_row = 0
-                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
-                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
+                                    fichas = self.calcularFichas()
+                                    print("se calcula")
+                                    pygame.display.set_caption(f'PELEA!! | BLANCO {fichas[0]} NEGRO {fichas[1]}')
                     elif event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
                             ejecutando = False
@@ -590,8 +593,8 @@ class Main:
 
                                 else:
                                     self.passed_in_a_row = 0
-                                    person = 'NEGRO' if not self.turno % 2 else 'BLANCO'
-                                    pygame.display.set_caption(f'PELEA!! | ES TURNO DEL DRAGON {person}')
+                                    fichas=self.calcularFichas()
+                                    pygame.display.set_caption(f'PELEA!! | BLANCO {fichas[0]} NEGRO {fichas[1]}')
                     elif event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
                             ejecutando = False
@@ -610,6 +613,7 @@ class Main:
                 self.screen.blit(turnoImagenN, (ubicacionTurno, 595))
             else:
                 self.screen.blit(turnoImagenB, (ubicacionTurno, 595))
+
             pygame.display.update()
         pygame.quit()
 
@@ -648,6 +652,23 @@ class Main:
             return 'White'
         else:
             return 'Black'
+
+    def calcularFichas(self):
+        list=[]
+        white_score = self.komi
+        black_score = 0
+
+        white_on_board, black_on_board = self.findPiecesOnBoard()
+        white_surrounded, black_surrounded = self.calculateSurroundedSpots()
+
+        white_score += white_on_board
+        black_score += black_on_board
+
+        white_score += white_surrounded
+        black_score += black_surrounded
+        list.append(white_score)
+        list.append(black_score)
+        return list
 
     def ganador(self, color):
         pygame.init()
