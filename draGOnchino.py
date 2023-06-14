@@ -316,7 +316,6 @@ class Main:
                     if self.calculateWhoWon()=="White":
                         self.pasar()
                 listiña=[]
-                print("Turno del bot")
                 self.screen.blit(background_image, (0, 0))
                 self.dibujarTablero()
                 self.dibujarSprites()
