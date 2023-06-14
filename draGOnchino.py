@@ -418,21 +418,21 @@ class Main:
         # IMAGEN QUE MUESTRA DE QUIEN ES EL TURNO
 
         turnoImagenN = pygame.image.load('lib/turnocolorN.png')
-        turnoImagenN = pygame.transform.scale(turnoImagenN, (318, 111))
+        turnoImagenN = pygame.transform.scale(turnoImagenN, (190, 90))
         turnoImagenB = pygame.image.load('lib/turnocolorB.png')
-        turnoImagenB = pygame.transform.scale(turnoImagenB, (318, 111))
-        ubicacionTurno = self.screen.get_width() - 610
+        turnoImagenB = pygame.transform.scale(turnoImagenB, (190, 90))
+        ubicacionTurno = self.screen.get_width() - 500
         # Botones para pasar menu y rendirse
         botonPasarImagen = pygame.image.load("lib/pasar.png").convert_alpha()
-        botonPasarImagen = pygame.transform.scale(botonPasarImagen, (178, 52))
+        botonPasarImagen = pygame.transform.scale(botonPasarImagen, (142, 40))
         botonPasar = botonPasarImagen.get_rect()
         botonPasar.x = self.screen.get_width() - 240
-        botonPasar.y = 620
+        botonPasar.y = 600
         botonMenuImagen = pygame.image.load("lib/menu.png").convert_alpha()
-        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (178, 52))
+        botonMenuImagen = pygame.transform.scale(botonMenuImagen, (142, 40))
         botonMenu = botonMenuImagen.get_rect()
         botonMenu.x = self.screen.get_width() - 240
-        botonMenu.y = 680
+        botonMenu.y = 645
         # Creamos el fondo de la pantalla
         self.screen.blit(background_image, (0, 0))
         # Dibujamos el tablero
@@ -443,7 +443,7 @@ class Main:
         self.screen.blit(botonMenuImagen, botonMenu)
         bot = 0
         cont = 0
-
+        
         while ejecutando:
             clock.tick(fps)
             self.screen.blit(turnoImagenN, (ubicacionTurno, 595))
@@ -662,9 +662,9 @@ class Main:
         botonMenu.y = 550
         # Cargar imagen de fondo según el color
         if color == "blanco":
-            background_image = pygame.image.load("lib/dragonBlanco.jpeg").convert()
+            background_image = pygame.image.load("lib/DragonBlanco.png").convert()
         elif color == "negro":
-            background_image = pygame.image.load("lib/dragonNegro.jpeg").convert()
+            background_image = pygame.image.load("lib/DragonNegro.png").convert()
         else:
             # Color no válido, salir sin mostrar imagen
             return
