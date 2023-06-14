@@ -596,6 +596,9 @@ class Main:
             self.dibujarSprites()
             self.screen.blit(botonPasarImagen, botonPasar)
             self.screen.blit(botonMenuImagen, botonMenu)
+            if self.turno % 2 == 0:
+                self.screen.blit(turnoImagenN, (ubicacionTurno, 620))
+            else: self.screen.blit(turnoImagenB, (ubicacionTurno, 620))
             pygame.display.update()
         pygame.quit()
 
