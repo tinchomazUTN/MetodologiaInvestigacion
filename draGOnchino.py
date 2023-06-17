@@ -232,7 +232,7 @@ class Main:
         self.screen.blit(botonMenuImagen, botonMenu)
         bot = 0
         cont = 0
-
+        contbot= 0
         while ejecutando:
             clock.tick(fps)
             self.screen.blit(turnoImagenN, (ubicacionTurno, 595))
@@ -323,9 +323,12 @@ class Main:
                     self.screen.blit(botonPasarImagen, botonPasar)
                     self.screen.blit(botonMenuImagen, botonMenu)
                     self.screen.blit(turnoImagenN,(ubicacionTurno, 595))
+                    contbot=0
             else:
                 self.screen.blit(turnoImagenB, (ubicacionTurno, 595))
-                pygame.time.delay(1000)
+                if contbot == 0:
+                    contbot = 1
+                    pygame.time.delay(1000)
                 if self.passed_in_a_row==1:
                     if self.calculateWhoWon()=="White":
                         self.pasar()
